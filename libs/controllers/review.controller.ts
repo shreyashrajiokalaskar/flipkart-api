@@ -1,23 +1,23 @@
-import { Request } from 'express';
-import handler from './handler.factory';
-import * as multer from 'multer';
-import { ReviewModel } from '../routes/review/review.model';
+import { Request } from "express";
+import handler from "./handler.factory";
+import { ReviewModel } from "../routes/review/review.model";
+import multer from "multer";
 
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'apps/flipkart-api/src/assets');
+    cb(null, "apps/flipkart-api/src/assets");
   },
   filename: (req: any, file, cb) => {
-    const ext = file.mimetype.split('/')[1];
+    const ext = file.mimetype.split("/")[1];
     cb(null, `user-${Date.now()}.${ext}`);
   },
 });
 
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image')) {
+const multerFilter = (req: Request, file: any, cb: any) => {
+  if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
-    cb(new Error('File is not image type'));
+    cb(new Error("File is not image type"));
   }
 };
 
@@ -26,9 +26,9 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-const uploadUserPhoto = upload.single('photo');
+const uploadUserPhoto = upload.single("photo");
 
-const createReview = async (req: any, res, next) => {
+const createReview = async (req: any, res: any, next: any) => {
   try {
     if (!req.body.product) req.body.product = req.body.id;
     if (!req.body.reviewer) req.body.reviewer = req.user._id;
@@ -39,7 +39,7 @@ const createReview = async (req: any, res, next) => {
   }
 };
 
-const getReview = async (req: Request, res, next) => {
+const getReview = async (req: Request, res: any, next: any) => {
   try {
     let filter = {};
     if (req.params.id)

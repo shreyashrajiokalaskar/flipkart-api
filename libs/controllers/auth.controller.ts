@@ -1,10 +1,9 @@
-import authService from '../routes/auth/auth.service';
-import { Request, Response } from 'express';
-import userService from '../routes/user/user.service';
-import { sendEmail } from '../utils/email.util';
-import * as crypto from 'crypto';
-import bcryptModifiers from '../utils/bcrypt.util';
-import { UserModel } from '../routes/user/user.model';
+import authService from "../routes/auth/auth.service";
+import { Request, Response } from "express";
+import userService from "../routes/user/user.service";
+import * as crypto from "crypto";
+import bcryptModifiers from "../utils/bcrypt.util";
+import { UserModel } from "../routes/user/user.model";
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -14,10 +13,10 @@ const signUp = async (req: Request, res: Response) => {
       expires: new Date(
         Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
       ),
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
     };
-    res.cookie('token', token, cookieOptions);
+    res.cookie("token", token, cookieOptions);
     res.status(201).json({ data: user, status: 201 });
   } catch (error: any) {
     res.status(400).json({ data: error.message, status: 400 });
@@ -32,10 +31,10 @@ const login = async (req: any, res: Response) => {
       expires: new Date(
         Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
       ),
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
     };
-    res.cookie('token', token, cookieOptions);
+    res.cookie("token", token, cookieOptions);
     res.status(200).json({ data: user, status: 200 });
     // res.status(200).render('index', {
     //   title: 'Hello',
@@ -51,24 +50,24 @@ const changePassword = async (req: Request, res: Response) => {
     if (!req.body.newPassword)
       res
         .status(400)
-        .json({ data: 'New password cannot be empty!', status: 400 });
-    console.log('TRYING HERE');
+        .json({ data: "New password cannot be empty!", status: 400 });
+    console.log("TRYING HERE");
 
     await authService.changePassword(req.body);
     res
       .status(200)
-      .json({ data: 'Password updated successfully!', status: 200 });
+      .json({ data: "Password updated successfully!", status: 200 });
   } catch (error: any) {
     res.status(400).json({ data: error.message, status: 400 });
   }
 };
 
-const resetPassword = async (req: Request, res: Response, next) => {
+const resetPassword = async (req: Request, res: Response, next: any) => {
   try {
     const hashedToken = crypto
-      .createHash('sha256')
+      .createHash("sha256")
       .update(req.params.token)
-      .digest('hex');
+      .digest("hex");
 
     const user = (await UserModel.findOne({
       where: {
@@ -89,7 +88,7 @@ const resetPassword = async (req: Request, res: Response, next) => {
     user.resetTokenExpires = undefined;
     await user.save();
     res.status(200).json({
-      data: 'Password changed successfully! Please login!',
+      data: "Password changed successfully! Please login!",
       status: 200,
     });
   } catch (error: any) {
@@ -97,25 +96,25 @@ const resetPassword = async (req: Request, res: Response, next) => {
   }
 };
 
-const forgotPassword = async (req: Request, res: Response, next) => {
+const forgotPassword = async (req: Request, res: Response, next: any) => {
   const user = await userService.getUser(req.body.email);
   try {
     if (!user) {
-      res.status(404).json({ data: 'User not found!', status: 404 });
+      res.status(404).json({ data: "User not found!", status: 404 });
     }
     const resetToken = user.resetPasswordToken();
     const resetURL = `${req.protocol}://${req.get(
-      'host'
+      "host"
     )}/api/auth/reset-password/${resetToken}`;
 
     const message = `Forgot your password? Reset password at ${resetURL}`;
 
     await user.save();
-    await sendEmail({
-      email: user.email,
-      message,
-      subject: 'Reset Password Token (Valid for 10 min)',
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   message,
+    //   subject: "Reset Password Token (Valid for 10 min)",
+    // });
     res.status(200).json({ data: `Token sent to ${user.email}`, status: 200 });
   } catch (error: any) {
     user.resetToken = undefined;

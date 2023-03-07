@@ -1,6 +1,6 @@
-import { OrderModel } from './order.model';
+import { OrderModel } from "./order.model";
 
-const createOrder = async (req, res, next) => {
+const createOrder = async (req: any, res: any, next: any) => {
   try {
     const orderDetails = req.body;
     const order = await OrderModel.create({ ...orderDetails });
@@ -13,7 +13,7 @@ const createOrder = async (req, res, next) => {
   }
 };
 
-const getOrder = async (req, res, next) => {
+const getOrder = async (req: any, res: any, next: any) => {
   try {
     const { id } = req.params;
     let orders = [] as any;

@@ -6,12 +6,12 @@ class CommonError extends Error {
   constructor(message: string, statusCode = 500) {
     super(message);
     this.statusCode = statusCode;
-    this.status = statusCode.toString().startsWith('4') ? 'Fail' : 'ERROR';
+    this.status = statusCode.toString().startsWith("4") ? "Fail" : "ERROR";
     this.isOperational = true;
     Error.captureStackTrace(this, this.constructor);
   }
 
-  sendDevError(error, res) {
+  sendDevError(error: any, res: any) {
     if (this.isOperational) {
       res.status(error.statusCode).json({
         status: error.status,
@@ -21,13 +21,13 @@ class CommonError extends Error {
       });
     } else {
       res.status(500).json({
-        status: 'ERROR',
-        message: 'Something went wrong',
+        status: "ERROR",
+        message: "Something went wrong",
       });
     }
   }
 
-  sendProdError(error, res) {
+  sendProdError(error: any, res: any) {
     res.status(error.statusCode).json({
       status: error.status,
       message: error.message,

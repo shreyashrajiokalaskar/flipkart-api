@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { ProductModel } from '../routes/product/product.model';
-import productService from '../routes/product/product.service';
+import { Request, Response } from "express";
+import { ProductModel } from "../routes/product/product.model";
+import productService from "../routes/product/product.service";
 
 const getProducts = async (req: Request, res: Response) => {
   try {
@@ -31,13 +31,13 @@ const getProductById = async (req: Request, res: Response) => {
     const products = await ProductModel.findByPk(id);
     if (products?.dataValues)
       res.status(200).json({ data: products?.dataValues, status: 200 });
-    else res.status(404).json({ data: 'Product not found!!!', status: 404 });
+    else res.status(404).json({ data: "Product not found!!!", status: 404 });
   } catch (error: any) {
     throw new Error(error);
   }
 };
 
-// const getProductReviews = async (req, res, next) => {
+// const getProductReviews = async (req:any, res:any, next:any) => {
 //   try {
 //     const reviews = await reviewController.createReview();
 //   } catch (error: any) {

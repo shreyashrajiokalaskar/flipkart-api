@@ -1,6 +1,5 @@
 const dotenv = require("dotenv");
 dotenv.config();
-console.log(process.env, "this is DOt ");
 const DOT_ENV = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,

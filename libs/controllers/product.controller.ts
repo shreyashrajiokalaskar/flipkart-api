@@ -4,10 +4,20 @@ import productService from "../routes/product/product.service";
 
 const getProducts = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
+    if (id) req.query["id"] = id;
     const products = await productService.getProducts(req.query);
-    res
-      .status(200)
-      .json({ data: { products, totalCount: products.length }, status: 200 });
+    const cleanedProducts = [...JSON.parse(JSON.stringify(products))];
+    cleanedProducts.forEach((product: any) => {
+      const image = product?.image?.images;
+      delete product.image;
+      product["images"] = image;
+      product["thumbnail"] = image[0];
+    });
+    res.status(200).json({
+      data: { products: cleanedProducts, totalCount: products.length },
+      status: 200,
+    });
   } catch (error: any) {
     throw new Error(error);
   }

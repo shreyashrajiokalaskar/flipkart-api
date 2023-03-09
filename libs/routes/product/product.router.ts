@@ -18,11 +18,7 @@ productRouter.get(
   authService.checkRole("ADMIN"),
   ProductController.getStats
 );
-productRouter.get(
-  "/:id",
-  authService.AuthGuard,
-  ProductController.getProductById
-);
+productRouter.get("/:id", authService.AuthGuard, ProductController.getProducts);
 
 // productRouter.post(
 //   '/:id/reviews',

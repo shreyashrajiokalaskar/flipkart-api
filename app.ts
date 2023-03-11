@@ -74,9 +74,8 @@ app.listen(port, () => {
 });
 
 app.get("/", (req: any, res, next) => {
-  res.status(200).render("index", {
-    title: "Natours",
-    message: "Welcome!!!",
+  res.status(200).json({
+    data: "HEY THERE!!!",
   });
 });
 

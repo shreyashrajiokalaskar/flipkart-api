@@ -55,7 +55,6 @@ const changePassword = async (userDto: Partial<IUser>) => {
         userDto.newPassword as string,
         user.password
       );
-      console.log('TRYING HERE', isPasswordSame);
       if (!isPasswordSame) {
         user.password = bcryptModifiers.encodePassword(
           userDto.newPassword as string

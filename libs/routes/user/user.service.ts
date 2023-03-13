@@ -6,9 +6,9 @@ import { UserModel } from './user.model';
 const createUser = async (userDto: IUser) => {
   userDto.password = bcryptModifiers.encodePassword(userDto.password);
   try {
-    return await UserModel.create({ userDto });
+    return await UserModel.create(userDto as any);
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(JSON.parse(JSON.stringify(error)).errors[0].message);
   }
 };
 

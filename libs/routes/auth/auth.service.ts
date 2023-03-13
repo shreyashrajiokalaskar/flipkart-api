@@ -1,10 +1,10 @@
-import { UserModel } from "./../user/user.model";
-import { IUser } from "../../interfaces/auth.interface";
-import userService from "../user/user.service";
-import * as jwt from "jsonwebtoken";
-import bcryptModifiers from "../../utils/bcrypt.util";
-import CommonError from "../../utils/error.common";
-import { Response } from "express";
+import { UserModel } from './../user/user.model';
+import { IUser } from '../../interfaces/auth.interface';
+import userService from '../user/user.service';
+import * as jwt from 'jsonwebtoken';
+import bcryptModifiers from '../../utils/bcrypt.util';
+import CommonError from '../../utils/error.common';
+import { Response } from 'express';
 
 // Login existing user
 const login = async (loginDto: Partial<IUser>) => {
@@ -39,7 +39,7 @@ const signToken = async (userData: any) => {
     role: userData.role,
   };
   return jwt.sign(payload, process.env.SECRET_KEY as string, {
-    expiresIn: "30m",
+    expiresIn: '30m',
   });
 };
 
@@ -55,15 +55,15 @@ const changePassword = async (userDto: Partial<IUser>) => {
         userDto.newPassword as string,
         user.password
       );
-      console.log("TRYING HERE", isPasswordSame);
+      console.log('TRYING HERE', isPasswordSame);
       if (!isPasswordSame) {
         user.password = bcryptModifiers.encodePassword(
           userDto.newPassword as string
         );
         return await userService.updateUser(user);
       }
-      throw new Error("New and old password should not be the same");
-    } else throw new Error("Wrong current password");
+      throw new Error('New and old password should not be the same');
+    } else throw new Error('Wrong current password');
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -72,8 +72,8 @@ const changePassword = async (userDto: Partial<IUser>) => {
 const AuthGuard = async (req: any, res: any, next: any) => {
   try {
     let token = req.headers.authorization;
-    if (token && token.startsWith("Bearer")) {
-      token = token.split(" ")[1];
+    if (token && token.startsWith('Bearer')) {
+      token = token.split(' ')[1];
       const decoded: any = await jwt.verify(
         token,
         process.env.SECRET_KEY as string
@@ -83,25 +83,25 @@ const AuthGuard = async (req: any, res: any, next: any) => {
       //   throw new Error('User recently changed their password');
       // }
       if (!user) {
-        throw new Error("The token does not correspond to a valid user");
+        throw new Error('The token does not correspond to a valid user');
       }
       req.user = user;
     }
     if (!token) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
     next();
   } catch (error: any) {
     res
       .status(401)
-      .json({ message: error.message || "Unauthorized", status: 401 });
+      .json({ message: error.message || 'Unauthorized', status: 401 });
   }
 };
 
 const checkRole = (roles: string) => {
   return (req: any, res: Response, next: any) => {
     if (!roles.includes(req?.user?.role)) {
-      res.status(403).json({ message: "Permission Denied!", status: 403 });
+      res.status(403).json({ message: 'Permission Denied!', status: 403 });
     }
     next();
   };
@@ -109,8 +109,8 @@ const checkRole = (roles: string) => {
 
 const setUser = async (req: any, res: any, next: any) => {
   let token = req.headers.authorization;
-  if (token && token.startsWith("Bearer")) {
-    token = token.split(" ")[1];
+  if (token && token.startsWith('Bearer')) {
+    token = token.split(' ')[1];
     const decoded: any = await jwt.verify(
       token,
       process.env.SECRET_KEY as string

@@ -39,7 +39,7 @@ const signToken = async (userData: any) => {
     role: userData.role,
   };
   return jwt.sign(payload, process.env.SECRET_KEY as string, {
-    expiresIn: '30m',
+    expiresIn: '60m',
   });
 };
 
@@ -48,16 +48,16 @@ const changePassword = async (userDto: Partial<IUser>) => {
     const user = await userService.getUser(userDto.email as string);
     const isPasswordValid = await bcryptModifiers.isValidPassword(
       userDto.password as string,
-      user.password
+      user.password,
     );
     if (isPasswordValid) {
       const isPasswordSame = await bcryptModifiers.isValidPassword(
         userDto.newPassword as string,
-        user.password
+        user.password,
       );
       if (!isPasswordSame) {
         user.password = bcryptModifiers.encodePassword(
-          userDto.newPassword as string
+          userDto.newPassword as string,
         );
         return await userService.updateUser(user);
       }
@@ -75,7 +75,7 @@ const AuthGuard = async (req: any, res: any, next: any) => {
       token = token.split(' ')[1];
       const decoded: any = await jwt.verify(
         token,
-        process.env.SECRET_KEY as string
+        process.env.SECRET_KEY as string,
       );
       const user = await UserModel.findByPk(decoded.id);
       // if (user?.validatePassword(decoded.iat)) {
@@ -112,7 +112,7 @@ const setUser = async (req: any, res: any, next: any) => {
     token = token.split(' ')[1];
     const decoded: any = await jwt.verify(
       token,
-      process.env.SECRET_KEY as string
+      process.env.SECRET_KEY as string,
     );
     req.user = decoded;
   }

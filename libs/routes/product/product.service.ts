@@ -53,7 +53,7 @@ const getProducts = async (filterParams?: any) => {
     const { searchString = '' } = filterParams;
     const whereClause = {} as any;
     if (filterParams.id) whereClause['id'] = filterParams.id;
-    return await ProductModel.findAll({
+    const products = await ProductModel.findAll({
       include: ImageModel,
       where: {
         title: {
@@ -63,6 +63,8 @@ const getProducts = async (filterParams?: any) => {
       },
       ...features,
     });
+    const totalCount = await ProductModel.count();
+    return { products, totalCount };
   } catch (error: any) {
     throw new Error(error);
   }

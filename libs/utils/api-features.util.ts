@@ -19,16 +19,18 @@ export class APIModifier {
     excludedParams.forEach((param) => delete queryParams[param]);
     // Filtering
     const { searchColumn, searchString } = queryParams;
-    const whereClause: { [key: string]: any } = {};
-    whereClause[searchColumn] = sequelize.where(
-      searchColumn,
-      'LIKE',
-      '%' + searchString + '%'
-    );
-    this.filterClause = {
-      ...this.filterClause,
-    };
-    return this;
+    // const whereClause: { [key: string]: any } = {};
+    // whereClause[searchColumn] = sequelize.where(
+    //   searchColumn,
+    //   'LIKE',
+    //   '%' + searchString + '%'
+    // );
+    // console.log(whereClause);
+    // this.filterClause = {
+    //   ...this.filterClause,
+    //   whereClause,
+    // };
+    return { searchColumn, searchString };
   }
 
   sort() {

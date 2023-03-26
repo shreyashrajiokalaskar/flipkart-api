@@ -1,18 +1,18 @@
-import axios from "axios";
-import { DataTypes } from "sequelize";
-import handler from "../../controllers/handler.factory";
-import { APIModifier } from "../../utils/api-features.util";
-import { CategoryModel } from "../category/category.model";
-import { ImageModel } from "../images/image.model";
-import { ProductModel } from "./product.model";
+import axios from 'axios';
+import { DataTypes, Op } from 'sequelize';
+import handler from '../../controllers/handler.factory';
+import { APIModifier } from '../../utils/api-features.util';
+import { CategoryModel } from '../category/category.model';
+import { ImageModel } from '../images/image.model';
+import { ProductModel } from './product.model';
 
 const getDummyProducts = async () => {
   try {
     const products = await axios.get(
-      "https://dummyjson.com/products?skip=30&limit=100",
+      'https://dummyjson.com/products?skip=30&limit=100',
       {
-        headers: { Accept: "application/json", "Accept-Encoding": "identity" },
-      }
+        headers: { Accept: 'application/json', 'Accept-Encoding': 'identity' },
+      },
     );
     products.data.products.forEach(async (product: any) => {
       delete product.id;
@@ -50,11 +50,17 @@ const getProducts = async (filterParams?: any) => {
       .limitFields()
       .paginate().filterClause;
 
-    const whereClause: { [key: string]: typeof DataTypes.UUID } = {};
-    if (filterParams.id) whereClause["id"] = filterParams.id;
+    const { searchString = '' } = filterParams;
+    const whereClause = {} as any;
+    if (filterParams.id) whereClause['id'] = filterParams.id;
     return await ProductModel.findAll({
       include: ImageModel,
-      where: whereClause,
+      where: {
+        title: {
+          [Op.iLike]: `%${searchString}%`,
+        },
+        ...whereClause,
+      },
       ...features,
     });
   } catch (error: any) {
@@ -63,7 +69,7 @@ const getProducts = async (filterParams?: any) => {
 };
 
 const getProductById = handler.getOne(ProductModel, {
-  path: "reviews",
+  path: 'reviews',
 });
 // async (id: string) => {
 //   try {
@@ -106,7 +112,7 @@ const getProductStats = async () => {
       raw: true,
     });
   } catch (error) {
-    throw new Error("ERROR");
+    throw new Error('ERROR');
   }
 };
 

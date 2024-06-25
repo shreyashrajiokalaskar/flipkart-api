@@ -1,7 +1,7 @@
-import { IUser } from '../../interfaces/auth.interface';
-import bcryptModifiers from '../../utils/bcrypt.util';
-import axios from 'axios';
-import { UserModel } from './user.model';
+import { IUser } from "../../interfaces/auth.interface";
+import bcryptModifiers from "../../utils/bcrypt.util";
+import axios from "axios";
+import { UserModel } from "./user.model";
 
 const createUser = async (userDto: IUser) => {
   userDto.password = bcryptModifiers.encodePassword(userDto.password);
@@ -21,9 +21,10 @@ const loginUser = async (userDto: Partial<IUser>) => {
     );
     if (isUser) {
       return user;
-    } else throw new Error('Password Invalid!!!');
+    }
+    throw new Error("Password Invalid!!!");
   } else {
-    throw new Error('USER NOT FOUND');
+    throw new Error("USER NOT FOUND");
   }
 };
 
@@ -56,8 +57,8 @@ const updateUser = async (userDto: IUser) => {
 
 const getDummyUsers = async () => {
   try {
-    const users = await axios.get('https://dummyjson.com/users?limit=10', {
-      headers: { Accept: 'application/json', 'Accept-Encoding': 'identity' },
+    const users = await axios.get("https://dummyjson.com/users?limit=10", {
+      headers: { Accept: "application/json", "Accept-Encoding": "identity" },
     });
     users.data.users.forEach(async (user: any) => {
       await setDummyUser(user);
@@ -70,7 +71,7 @@ const getDummyUsers = async () => {
 const setDummyUser = async (user: any) => {
   try {
     const { firstName, lastName, email, image, address } = user;
-    const password = bcryptModifiers.encodePassword('password@123');
+    const password = bcryptModifiers.encodePassword("password@123");
     address.coordinates = [address.coordinates.lat, address.coordinates.lng];
     await UserModel.create({
       firstName,

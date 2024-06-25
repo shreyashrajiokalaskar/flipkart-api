@@ -25,12 +25,12 @@ export const sequelizeInstanceCreation = () => {
 const sequelize = sequelizeInstanceCreation();
 
 export const databaseConnection = async () => {
-  await sequelize.authenticate();
-  // if (sequelize) {
-  //   logger.info('Database Connected Successfully');
-  // } else {
-  //   logger.info('Something Went Wrong With Database Connection.');
-  // }
+  const dbConnection = await sequelize.authenticate();
+  if (sequelize) {
+    console.info("Database Connected Successfully");
+  } else {
+    console.info("Something Went Wrong With Database Connection.");
+  }
 };
 
 export { sequelize };

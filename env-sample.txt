@@ -26,3 +26,15 @@ DB_PASSWORD=KSc05JoKRabiYFD4F_kyYoG-bRpAaXLV
 # DB_PASSWORD='KSc05JoKRabiYFD4F_kyYoG-bRpAaXLV'
 # DB_NAME=mcrdvtou
 # DB_HOST=trumpet.db.elephantsql.com
+
+CREATE MODEL AND MIGRATION
+npx sequelize-cli model:generate --name category --attributes slug:string,category:string 
+
+MIGRATE
+ npx sequelize-cli db:migrate   
+
+GENERATE SEEDER
+npx sequelize-cli seed:generate --name user-roles     
+
+RUN SEEDER
+npx sequelize-cli db:seed:all   

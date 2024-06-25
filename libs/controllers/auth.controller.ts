@@ -4,6 +4,9 @@ import userService from "../routes/user/user.service";
 import * as crypto from "crypto";
 import bcryptModifiers from "../utils/bcrypt.util";
 import { UserModel } from "../routes/user/user.model";
+import fs from "fs";
+const csv = require("csv-parser");
+const { v4: uuidv4 } = require("uuid");
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -126,11 +129,60 @@ const forgotPassword = async (req: Request, res: Response, next: any) => {
   }
 };
 
+const seedPincodes = async (req: Request, res: Response, next: any) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+  const filePath = `/home/tech/Documents/personal/flipkart-api/${req.file.path}`;
+  const results: {
+    id: string;
+    pincode: number;
+    city: string;
+    district: string;
+    state: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }[] = [];
+  console.log("PATH", filePath);
+  fs.createReadStream(filePath)
+    .pipe(csv())
+    .on("data", (data: any) => {
+      results.push({
+        id: uuidv4(),
+        pincode: +data.Pincode,
+        city: data["Office Name"],
+        state: data.StateName,
+        district: data.District,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    })
+    .on("end", async () => {
+      try {
+        console.log(results);
+        // await db.Pincode.bulkCreate(results);
+        fs.unlinkSync(filePath); // Delete the uploaded CSV file after processing
+        res.send("Data has been successfully inserted into the database.");
+      } catch (error: any) {
+        res
+          .status(500)
+          .send(`Error inserting data into the database: ${error.message}`);
+      }
+    })
+    .on("error", (err: any) => {
+      res.status(500).send(`Error processing CSV file: ${err.message}`);
+    });
+  res.status(200).json({
+    message: "SUCCESS",
+  });
+};
+
 const AuthController = {
   signUp,
   login,
   changePassword,
   resetPassword,
   forgotPassword,
+  seedPincodes,
 };
 export default AuthController;

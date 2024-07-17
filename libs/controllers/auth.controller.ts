@@ -5,8 +5,10 @@ import * as crypto from "crypto";
 import bcryptModifiers from "../utils/bcrypt.util";
 import { UserModel } from "../routes/user/user.model";
 import fs from "fs";
+import { Model } from "sequelize";
 const csv = require("csv-parser");
 const { v4: uuidv4 } = require("uuid");
+const db = require("../../models");
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -130,6 +132,7 @@ const forgotPassword = async (req: Request, res: Response, next: any) => {
 };
 
 const seedPincodes = async (req: Request, res: Response, next: any) => {
+  const { limit, pageNo } = req.body;
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
@@ -137,20 +140,31 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
   const results: {
     id: string;
     pincode: number;
-    city: string;
+    name: string;
     district: string;
     state: string;
     createdAt: Date;
     updatedAt: Date;
   }[] = [];
-  console.log("PATH", filePath);
+  const startIndex = (pageNo - 1) * limit;
+  const endIndex = pageNo * limit;
   fs.createReadStream(filePath)
     .pipe(csv())
-    .on("data", (data: any) => {
+    .on("data", async (data: any) => {
+      if (data.Delivery === "Non Delivery") {
+        return;
+      }
+      // Validate data
+      const pincode = Number(data.Pincode);
+      if (isNaN(pincode)) {
+        console.error(`Invalid pincode: ${data.Pincode}`);
+        return;
+      }
+
       results.push({
         id: uuidv4(),
-        pincode: +data.Pincode,
-        city: data["Office Name"],
+        pincode: pincode,
+        name: data["Office Name"],
         state: data.StateName,
         district: data.District,
         createdAt: new Date(),
@@ -159,8 +173,31 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
     })
     .on("end", async () => {
       try {
-        console.log(results);
-        // await db.Pincode.bulkCreate(results);
+        const paginatedResults = results.slice(startIndex, endIndex);
+        paginatedResults.forEach(async (city) => {
+          try {
+            const {
+              id,
+              pincode,
+              name,
+              state,
+              district,
+              createdAt,
+              updatedAt,
+            } = city;
+            await db.city.create({
+              id,
+              pincode,
+              name,
+              state,
+              district,
+              createdAt,
+              updatedAt,
+            })
+          } catch (error) {
+            console.log("ERROR", error, city)
+          }
+        });
         fs.unlinkSync(filePath); // Delete the uploaded CSV file after processing
         res.send("Data has been successfully inserted into the database.");
       } catch (error: any) {
@@ -172,9 +209,6 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
     .on("error", (err: any) => {
       res.status(500).send(`Error processing CSV file: ${err.message}`);
     });
-  res.status(200).json({
-    message: "SUCCESS",
-  });
 };
 
 const AuthController = {

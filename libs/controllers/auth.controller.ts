@@ -1,105 +1,85 @@
 import authService from "../routes/auth/auth.service";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import userService from "../routes/user/user.service";
 import * as crypto from "crypto";
 import bcryptModifiers from "../utils/bcrypt.util";
 import { UserModel } from "../routes/user/user.model";
 import fs from "fs";
-import { Model } from "sequelize";
+import { controllerHandler } from "../utils/common-handler";
 const csv = require("csv-parser");
 const { v4: uuidv4 } = require("uuid");
 const db = require("../../models");
 
-const signUp = async (req: Request, res: Response) => {
-  try {
-    const user = await authService.signUp(req.body);
-    const { token } = user;
-    const cookieOptions = {
-      expires: new Date(
-        Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
-      ),
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-    };
-    res.cookie("token", token, cookieOptions);
-    res.status(201).json({ data: user, status: 201 });
-  } catch (error: any) {
-    res.status(400).json({ data: error.message, status: 400 });
-  }
-};
+const signUp = controllerHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const user = await authService.signUp(req.body);
+  const { token } = user;
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
+    ),
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  };
+  res.cookie("token", token, cookieOptions);
+  res.status(201).json({ data: user, status: 201 });
+});
 
-const login = async (req: any, res: Response) => {
-  try {
-    const user = await authService.login(req.body);
-    const { token } = user;
-    const cookieOptions = {
-      expires: new Date(
-        Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
-      ),
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-    };
-    res.cookie("token", token, cookieOptions);
-    res.status(200).json({ data: user, status: 200 });
-    // res.status(200).render('index', {
-    //   title: 'Hello',
-    //   message: 'Welcome!!!',
-    // });
-  } catch (error: any) {
-    res.status(401).json({ error: error.message, status: 401 });
-  }
-};
+const login = controllerHandler(async (req: any, res: Response) => {
+  const user = await authService.login(req.body);
+  const { token } = user;
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
+    ),
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  };
+  res.cookie("token", token, cookieOptions);
+  res.status(200).json({ data: user, status: 200 });
+});
 
-const changePassword = async (req: Request, res: Response) => {
-  try {
-    if (!req.body.newPassword)
-      res
-        .status(400)
-        .json({ data: "New password cannot be empty!", status: 400 });
-    console.log("TRYING HERE");
-
-    await authService.changePassword(req.body);
+const changePassword = controllerHandler(async (req: Request, res: Response) => {
+  if (!req.body.newPassword)
     res
-      .status(200)
-      .json({ data: "Password updated successfully!", status: 200 });
-  } catch (error: any) {
-    res.status(400).json({ data: error.message, status: 400 });
+      .status(400)
+      .json({ data: "New password cannot be empty!", status: 400 });
+
+  await authService.changePassword(req.body);
+  res
+    .status(200)
+    .json({ data: "Password updated successfully!", status: 200 });
+
+});
+
+const resetPassword = controllerHandler(async (req: Request, res: Response, next: any) => {
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const user = (await UserModel.findOne({
+    where: {
+      resetToken: hashedToken,
+      resetTokenExpires: { $gt: Date.now() },
+    },
+  })) as any;
+
+  if (!user) {
+    res.status(400).json({ data: `Token is invalid`, status: 400 });
   }
-};
-
-const resetPassword = async (req: Request, res: Response, next: any) => {
-  try {
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(req.params.token)
-      .digest("hex");
-
-    const user = (await UserModel.findOne({
-      where: {
-        resetToken: hashedToken,
-        resetTokenExpires: { $gt: Date.now() },
-      },
-    })) as any;
-
-    if (!user) {
-      res.status(400).json({ data: `Token is invalid`, status: 400 });
-    }
-    const password = bcryptModifiers.encodePassword(
-      req.body.password as string
-    );
-    user.password = password;
-    user.updatedAt = Date.now();
-    user.resetToken = undefined;
-    user.resetTokenExpires = undefined;
-    await user.save();
-    res.status(200).json({
-      data: "Password changed successfully! Please login!",
-      status: 200,
-    });
-  } catch (error: any) {
-    res.status(400).json({ data: error.message, status: 400 });
-  }
-};
+  const password = bcryptModifiers.encodePassword(
+    req.body.password as string
+  );
+  user.password = password;
+  user.updatedAt = Date.now();
+  user.resetToken = undefined;
+  user.resetTokenExpires = undefined;
+  await user.save();
+  res.status(200).json({
+    data: "Password changed successfully! Please login!",
+    status: 200,
+  });
+});
 
 const forgotPassword = async (req: Request, res: Response, next: any) => {
   const user = await userService.getUser(req.body.email);

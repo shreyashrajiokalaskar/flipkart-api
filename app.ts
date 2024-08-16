@@ -86,21 +86,12 @@ app.all("*", (req: any, res, next) => {
   //   status: 404,
   //   error: `${req.originalUrl} not found!!!`,
   // });
-  next(new CommonError(`${req.originalUrl} not found!!!`, 404));
+  next(new CommonError(new Error(`${req.originalUrl} not found!!!`)));
 });
 
 app.use((error: any, req: any, res: any, next: any) => {
   error.status = error.status || "Error";
   error.statusCode = error.statusCode || 500;
-  const commonError = new CommonError(error.message);
-
-  if (process.env.NODE_ENV === "dev") {
-    commonError.sendDevError(error, res);
-  } else if (process.env.NODE_ENV === "production") {
-    let err = { ...error };
-    if (err.name === "CastError") err = handleDBCastError(error);
-    if (err.code === 11000) err = handleDuplicateFieldError(error);
-
-    commonError.sendProdError(err, res);
-  }
+  const commonError = new CommonError(error);
+  commonError.sendDevError(error, res);
 });

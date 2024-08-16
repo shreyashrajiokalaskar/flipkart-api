@@ -22,7 +22,7 @@ export const sequelizeInstanceCreation = () => {
   );
 };
 
-const sequelize = sequelizeInstanceCreation();
+export const sequelize = sequelizeInstanceCreation();
 
 export const databaseConnection = async () => {
   const dbConnection = await sequelize.authenticate();
@@ -33,4 +33,3 @@ export const databaseConnection = async () => {
   }
 };
 
-export { sequelize };

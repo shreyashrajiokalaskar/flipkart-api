@@ -3,10 +3,11 @@ class CommonError extends Error {
   status: string;
   statusCode: number;
 
-  constructor(message: string, statusCode = 500) {
-    super(message);
-    this.statusCode = statusCode;
-    this.status = statusCode.toString().startsWith("4") ? "Fail" : "ERROR";
+  constructor(error: any) {
+    error.message = error?.message ?? 'Error'; 
+    super(error.message);
+    this.statusCode = error.statusCode ?? 500;
+    this.status = this.statusCode.toString().startsWith("4") ? "Fail" : "ERROR";
     this.isOperational = true;
     Error.captureStackTrace(this, this.constructor);
   }
@@ -16,8 +17,7 @@ class CommonError extends Error {
       res.status(error.statusCode).json({
         status: error.status,
         message: error.message,
-        stack: error.stack,
-        error,
+        statusCode: error.statusCode,
       });
     } else {
       res.status(500).json({
@@ -38,10 +38,12 @@ export default CommonError;
 
 export const handleDBCastError = (error: any) => {
   const message = `Invalid ${error.path}: ${error.value}`;
-  return new CommonError(message, 400);
+  error.message = message;
+  return new CommonError(error);
 };
 
 export const handleDuplicateFieldError = (error: any) => {
   const message = `Duplicate Field Value`;
-  return new CommonError(message, 400);
+  error.message = message;
+  return new CommonError(error);
 };

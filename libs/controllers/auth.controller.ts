@@ -8,7 +8,7 @@ import fs from "fs";
 import { controllerHandler } from "../utils/common-handler";
 const csv = require("csv-parser");
 const { v4: uuidv4 } = require("uuid");
-const db = require("../../models");
+const db = require("../models");
 
 const signUp = controllerHandler(async (req: Request, res: Response, next: NextFunction) => {
   const user = await authService.signUp(req.body);

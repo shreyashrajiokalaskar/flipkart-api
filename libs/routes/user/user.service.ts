@@ -4,8 +4,8 @@ import axios from "axios";
 import { UserModel } from "./user.model";
 import { DataTypes, UniqueConstraintError, ValidationError } from "sequelize";
 import { sequelize } from "../../configs/db-connection.config";
-import UserModelFactory from "../../../models/user.model";
-import RoleModelFactory from "../../../models/role.model";
+import UserModelFactory from "../../models/user.model";
+import RoleModelFactory from "../../models/role.model";
 import CommonError from "../../utils/error.common";
 
 const User = UserModelFactory(sequelize, DataTypes);

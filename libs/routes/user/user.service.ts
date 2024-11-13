@@ -1,15 +1,15 @@
-import { IUser, ROLES } from "../../interfaces/auth.interface";
+import { IUser } from "../../interfaces/auth.interface";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import axios from "axios";
-import { UserModel } from "./user.model";
 import { DataTypes, UniqueConstraintError, ValidationError } from "sequelize";
 import { sequelize } from "../../configs/db-connection.config";
 import UserModelFactory from "../../models/user.model";
 import RoleModelFactory from "../../models/role.model";
 import CommonError from "../../utils/error.common";
+import { ROLES } from "../../shared/common.enum";
 
 const User = UserModelFactory(sequelize, DataTypes);
-const Role = RoleModelFactory(sequelize, DataTypes);
+const Role = RoleModelFactory(sequelize);
 
 const createUser = async (userDto: IUser) => {
   userDto.password = bcryptModifiers.encodePassword(userDto.password);
@@ -26,26 +26,25 @@ const createUser = async (userDto: IUser) => {
   } catch (error: any) {
     if (error instanceof ValidationError) {
       const errorModified = {
-        message: error.errors.map((err: any) => err.message).join(', '),
-        statusCode: 400
-      }
+        message: error.errors.map((err: any) => err.message).join(", "),
+        statusCode: 400,
+      };
       throw new CommonError(errorModified);
     }
     if (error instanceof UniqueConstraintError) {
       const errorModified = {
-        message: 'Duplicate field value',
-        statusCode: 409
-      }
+        message: "Duplicate field value",
+        statusCode: 409,
+      };
       throw new CommonError(errorModified);
     }
 
     // For all other errors
     const errorModified = {
-      message: error.message || 'Database Error',
-      statusCode: 500
-    }
+      message: error.message || "Database Error",
+      statusCode: 500,
+    };
     throw new CommonError(errorModified);
-
   }
 };
 
@@ -61,34 +60,34 @@ const loginUser = async (userDto: Partial<IUser>) => {
     }
     const errorModified = {
       message: "Password Invalid!!!",
-      statusCode: 400
-    }
+      statusCode: 400,
+    };
     throw new CommonError(errorModified);
   } else {
     const errorModified = {
       message: "USER NOT FOUND",
-      statusCode: 404
-    }
+      statusCode: 404,
+    };
     throw new CommonError(errorModified);
   }
 };
 
 const getUser = async (email: string) => {
   try {
-    const user = await UserModel.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email } });
     return user?.dataValues;
   } catch (error: any) {
     const errorModified = {
       message: error.message,
-      statusCode: 404
-    }
+      statusCode: 404,
+    };
     throw new CommonError(errorModified);
   }
 };
 
 const updateUser = async (userDto: IUser) => {
   try {
-    return await UserModel.update(
+    return await User.update(
       {
         password: userDto.password,
         updatedAt: Date.now(),
@@ -122,7 +121,7 @@ const setDummyUser = async (user: any) => {
     const { firstName, lastName, email, image, address } = user;
     const password = bcryptModifiers.encodePassword("password@123");
     address.coordinates = [address.coordinates.lat, address.coordinates.lng];
-    await UserModel.create({
+    await User.create({
       firstName,
       lastName,
       email,

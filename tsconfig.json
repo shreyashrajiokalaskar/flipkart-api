@@ -12,5 +12,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": ["libs/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

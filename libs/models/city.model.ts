@@ -1,22 +1,38 @@
 "use strict";
 import { Model, Sequelize } from "sequelize";
-module.exports = (sequelize: Sequelize, DataTypes: any) => {
+export default (sequelize: Sequelize, DataTypes: any) => {
   class city extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models: any) {
-      // define association here
+      city.hasMany(models.address,{
+        foreignKey: 'cityId',
+        as: "addresses"
+      })
     }
   }
   city.init(
     {
-      pincode: DataTypes.NUMBER,
-      name: DataTypes.STRING,
-      district: DataTypes.STRING,
-      state: DataTypes.STRING,
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+      },
+      pincode: {
+        type: DataTypes.NUMBER,
+        allowNull: false,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      district: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      state: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,

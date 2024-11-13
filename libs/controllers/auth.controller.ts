@@ -3,12 +3,18 @@ import { NextFunction, Request, Response } from "express";
 import userService from "../routes/user/user.service";
 import * as crypto from "crypto";
 import bcryptModifiers from "../utils/bcrypt.util";
-import { UserModel } from "../routes/user/user.model";
 import fs from "fs";
 import { controllerHandler } from "../utils/common-handler";
-const csv = require("csv-parser");
+import csv from "csv-parser";
+import UserModelFactory from "../models/user.model";
+import CityModelFactory from "../models/city.model";
+import { sequelize } from "../configs/db-connection.config";
+import { DataTypes } from "sequelize";
 const { v4: uuidv4 } = require("uuid");
-const db = require("../models");
+
+const User = UserModelFactory(sequelize, DataTypes);
+const City = CityModelFactory(sequelize, DataTypes);
+
 
 const signUp = controllerHandler(async (req: Request, res: Response, next: NextFunction) => {
   const user = await authService.signUp(req.body);
@@ -57,7 +63,7 @@ const resetPassword = controllerHandler(async (req: Request, res: Response, next
     .update(req.params.token)
     .digest("hex");
 
-  const user = (await UserModel.findOne({
+  const user = (await User.findOne({
     where: {
       resetToken: hashedToken,
       resetTokenExpires: { $gt: Date.now() },
@@ -165,7 +171,7 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
               createdAt,
               updatedAt,
             } = city;
-            await db.city.create({
+            await City.create({
               id,
               pincode,
               name,

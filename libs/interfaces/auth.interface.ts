@@ -1,3 +1,5 @@
+import { ROLES } from "../shared/common.enum";
+
 export interface IUser {
   email: string;
   password: string;
@@ -5,10 +7,4 @@ export interface IUser {
   lastName: string;
   role?: ROLES;
   id?: string;
-}
-
-
-export enum ROLES {
-  USER = "USER",
-  ADMIN = "ADMIN"
 }

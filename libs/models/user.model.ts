@@ -11,6 +11,10 @@ export default (sequelize: Sequelize, DataTypes: any) => {
     static associate(models: any) {
       // define association here
       User.belongsTo(models.role, { foreignKey: "roleId", as: "role" });
+      User.hasMany(models.address, {
+        foreignKey: 'userId',
+        as: 'addresses'
+      })
     }
   }
 

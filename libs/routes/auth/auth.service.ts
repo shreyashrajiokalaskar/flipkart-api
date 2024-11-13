@@ -1,10 +1,13 @@
-import { UserModel } from "./../user/user.model";
 import { IUser } from "../../interfaces/auth.interface";
 import userService from "../user/user.service";
 import * as jwt from "jsonwebtoken";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import CommonError from "../../utils/error.common";
 import { Response } from "express";
+import UserModelFactory from "../../models/user.model";
+import { sequelize } from "../../configs/db-connection.config";
+import { DataTypes } from "sequelize";
+const User = UserModelFactory(sequelize, DataTypes);
 
 // Login existing user
 const login = async (loginDto: Partial<IUser>) => {
@@ -77,7 +80,7 @@ const AuthGuard = async (req: any, res: any, next: any) => {
         token,
         process.env.SECRET_KEY as string
       );
-      const user = await UserModel.findByPk(decoded.id);
+      const user = await User.findByPk(decoded.id);
       // if (user?.validatePassword(decoded.iat)) {
       //   throw new Error('User recently changed their password');
       // }

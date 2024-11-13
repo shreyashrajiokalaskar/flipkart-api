@@ -7,7 +7,6 @@ import {
   databaseConnection,
   handleDBCastError,
   handleDuplicateFieldError,
-  routes,
 } from "./libs";
 import cors from "cors";
 import CommonError from "./libs/utils/error.common";
@@ -16,6 +15,7 @@ import express from "express";
 // import cors = require("cors");
 // import cronService from "libs/api-common/src/lib/crons/cron.service";
 // import path = require("path");
+import  Router from './libs/routes/routes'
 
 const app = express();
 
@@ -79,7 +79,7 @@ app.get("/", (req: any, res, next) => {
   });
 });
 
-routes.init(app);
+Router.init(app);
 
 app.all("*", (req: any, res, next) => {
   // res.status(404).json({

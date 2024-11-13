@@ -38,7 +38,6 @@ class Router {
       );
     } else {
       this.routes.allRoutes.forEach((route) => {
-        console.log(route);
         return app.use(`/api/${route.path}`, route.router);
       });
     }

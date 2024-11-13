@@ -6,29 +6,25 @@ import bcryptModifiers from "../utils/bcrypt.util";
 import fs from "fs";
 import { controllerHandler } from "../utils/common-handler";
 import csv from "csv-parser";
-import UserModelFactory from "../models/user.model";
-import CityModelFactory from "../models/city.model";
-import { sequelize } from "../configs/db-connection.config";
-import { DataTypes } from "sequelize";
+import { User } from "../models/user.model";
+import { City } from "../models/city.model";
 const { v4: uuidv4 } = require("uuid");
 
-const User = UserModelFactory(sequelize, DataTypes);
-const City = CityModelFactory(sequelize, DataTypes);
-
-
-const signUp = controllerHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await authService.signUp(req.body);
-  const { token } = user;
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
-    ),
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-  };
-  res.cookie("token", token, cookieOptions);
-  res.status(201).json({ data: user, status: 201 });
-});
+const signUp = controllerHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await authService.signUp(req.body);
+    const { token } = user;
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
+      ),
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+    };
+    res.cookie("token", token, cookieOptions);
+    res.status(201).json({ data: user, status: 201 });
+  }
+);
 
 const login = controllerHandler(async (req: any, res: Response) => {
   const user = await authService.login(req.body);
@@ -44,48 +40,51 @@ const login = controllerHandler(async (req: any, res: Response) => {
   res.status(200).json({ data: user, status: 200 });
 });
 
-const changePassword = controllerHandler(async (req: Request, res: Response) => {
-  if (!req.body.newPassword)
+const changePassword = controllerHandler(
+  async (req: Request, res: Response) => {
+    if (!req.body.newPassword)
+      res
+        .status(400)
+        .json({ data: "New password cannot be empty!", status: 400 });
+
+    await authService.changePassword(req.body);
     res
-      .status(400)
-      .json({ data: "New password cannot be empty!", status: 400 });
-
-  await authService.changePassword(req.body);
-  res
-    .status(200)
-    .json({ data: "Password updated successfully!", status: 200 });
-
-});
-
-const resetPassword = controllerHandler(async (req: Request, res: Response, next: any) => {
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex");
-
-  const user = (await User.findOne({
-    where: {
-      resetToken: hashedToken,
-      resetTokenExpires: { $gt: Date.now() },
-    },
-  })) as any;
-
-  if (!user) {
-    res.status(400).json({ data: `Token is invalid`, status: 400 });
+      .status(200)
+      .json({ data: "Password updated successfully!", status: 200 });
   }
-  const password = bcryptModifiers.encodePassword(
-    req.body.password as string
-  );
-  user.password = password;
-  user.updatedAt = Date.now();
-  user.resetToken = undefined;
-  user.resetTokenExpires = undefined;
-  await user.save();
-  res.status(200).json({
-    data: "Password changed successfully! Please login!",
-    status: 200,
-  });
-});
+);
+
+const resetPassword = controllerHandler(
+  async (req: Request, res: Response, next: any) => {
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    const user = (await User.findOne({
+      where: {
+        resetToken: hashedToken,
+        resetTokenExpires: { $gt: Date.now() },
+      },
+    })) as any;
+
+    if (!user) {
+      res.status(400).json({ data: `Token is invalid`, status: 400 });
+    }
+    const password = bcryptModifiers.encodePassword(
+      req.body.password as string
+    );
+    user.password = password;
+    user.updatedAt = Date.now();
+    user.resetToken = undefined;
+    user.resetTokenExpires = undefined;
+    await user.save();
+    res.status(200).json({
+      data: "Password changed successfully! Please login!",
+      status: 200,
+    });
+  }
+);
 
 const forgotPassword = async (req: Request, res: Response, next: any) => {
   const user = await userService.getUser(req.body.email);
@@ -162,15 +161,8 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
         const paginatedResults = results.slice(startIndex, endIndex);
         paginatedResults.forEach(async (city) => {
           try {
-            const {
-              id,
-              pincode,
-              name,
-              state,
-              district,
-              createdAt,
-              updatedAt,
-            } = city;
+            const { id, pincode, name, state, district, createdAt, updatedAt } =
+              city;
             await City.create({
               id,
               pincode,
@@ -179,9 +171,9 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
               district,
               createdAt,
               updatedAt,
-            })
+            });
           } catch (error) {
-            console.log("ERROR", error, city)
+            console.log("ERROR", error, city);
           }
         });
         fs.unlinkSync(filePath); // Delete the uploaded CSV file after processing

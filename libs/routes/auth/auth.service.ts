@@ -4,10 +4,7 @@ import * as jwt from "jsonwebtoken";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import CommonError from "../../utils/error.common";
 import { Response } from "express";
-import UserModelFactory from "../../models/user.model";
-import { sequelize } from "../../configs/db-connection.config";
-import { DataTypes } from "sequelize";
-const User = UserModelFactory(sequelize, DataTypes);
+import { User } from "../../models/user.model";
 
 // Login existing user
 const login = async (loginDto: Partial<IUser>) => {

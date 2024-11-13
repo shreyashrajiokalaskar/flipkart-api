@@ -1,15 +1,11 @@
 import { IUser } from "../../interfaces/auth.interface";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import axios from "axios";
-import { DataTypes, UniqueConstraintError, ValidationError } from "sequelize";
-import { sequelize } from "../../configs/db-connection.config";
-import UserModelFactory from "../../models/user.model";
-import RoleModelFactory from "../../models/role.model";
+import { UniqueConstraintError, ValidationError } from "sequelize";
 import CommonError from "../../utils/error.common";
 import { ROLES } from "../../shared/common.enum";
-
-const User = UserModelFactory(sequelize, DataTypes);
-const Role = RoleModelFactory(sequelize);
+import { User } from "../../models/user.model";
+import { Role } from "../../models/role.model";
 
 const createUser = async (userDto: IUser) => {
   userDto.password = bcryptModifiers.encodePassword(userDto.password);

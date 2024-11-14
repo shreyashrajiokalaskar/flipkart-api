@@ -17,13 +17,13 @@ module.exports = {
     return queryInterface.bulkInsert("roles", [
       {
         id: uuidv4(),
-        role: "USER",
+        role: "BUYER",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
         id: uuidv4(),
-        role: "ADMIN",
+        role: "SELLER",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

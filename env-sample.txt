@@ -31,7 +31,7 @@ CREATE MODEL AND MIGRATION
 npx sequelize-cli model:generate --name category --attributes slug:string,category:string 
 
 MIGRATE
- npx sequelize-cli db:migrate   
+npx sequelize-cli db:migrate --env dev   
 
 GENERATE SEEDER
 npx sequelize-cli seed:generate --name user-roles     

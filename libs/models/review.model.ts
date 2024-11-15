@@ -59,7 +59,7 @@ Review.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: "users",
+        model: "user",
         key: "id",
       },
     },
@@ -81,7 +81,7 @@ Review.init(
   },
   {
     sequelize,
-    modelName: "Review",
+    modelName: "review",
   }
 );
 export { Review };

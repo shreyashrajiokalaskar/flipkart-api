@@ -1,9 +1,9 @@
-import { OrderModel } from "./order.model";
+import { Order } from "../../models/order.model";
 
 const createOrder = async (req: any, res: any, next: any) => {
   try {
     const orderDetails = req.body;
-    const order = await OrderModel.create({ ...orderDetails });
+    const order = await Order.create({ ...orderDetails });
     res.status(201).json({
       data: { order, totalCount: 1 },
       status: 201,
@@ -18,9 +18,9 @@ const getOrder = async (req: any, res: any, next: any) => {
     const { id } = req.params;
     let orders = [] as any;
     if (id) {
-      orders = await OrderModel.findByPk(id);
+      orders = await Order.findByPk(id);
     } else {
-      orders = await OrderModel.findAll();
+      orders = await Order.findAll();
     }
     // .populate({ path: 'userId', select: '-password' })
     // .populate('products')

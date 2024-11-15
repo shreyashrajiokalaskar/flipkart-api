@@ -14,7 +14,7 @@ Category.init(
   },
   {
     sequelize,
-    modelName: "Category",
+    modelName: "category",
   }
 );
 export { Category };

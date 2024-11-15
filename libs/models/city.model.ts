@@ -37,7 +37,7 @@ City.init(
   },
   {
     sequelize,
-    modelName: "City",
+    modelName: "city",
   }
 );
 export { City };

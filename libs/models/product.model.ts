@@ -59,7 +59,7 @@ Product.init(
   },
   {
     sequelize,
-    modelName: "Product",
+    modelName: "product",
   }
 );
 export { Product };

@@ -27,21 +27,21 @@ Address.init(
     userId: {
       type: DataTypes.UUID,
       references: {
-        model: "users",
+        model: "user",
         key: "id",
       },
     },
     cityId: {
       type: DataTypes.UUID,
       references: {
-        model: "cities",
+        model: "city",
         key: "id",
       },
     },
   },
   {
     sequelize,
-    modelName: "Address",
+    modelName: "address",
   }
 );
 

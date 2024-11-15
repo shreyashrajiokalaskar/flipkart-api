@@ -4,7 +4,7 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../configs/db-connection.config";
 import { PAYMENT_METHODS, PAYMENT_STATUS } from "../shared/common.enum";
 
-class payment extends Model {
+class Payment extends Model {
   /**
    * Helper method for defining associations.
    * This method is not a part of Sequelize lifecycle.
@@ -14,7 +14,7 @@ class payment extends Model {
     // define association here
   }
 }
-payment.init(
+Payment.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -23,21 +23,11 @@ payment.init(
       allowNull: false,
     },
     method: {
-      type: DataTypes.ENUM(
-        PAYMENT_METHODS.BANK_TRANSFER,
-        PAYMENT_METHODS.CREDIT_CARD,
-        PAYMENT_METHODS.EMI,
-        PAYMENT_METHODS.UPI,
-        PAYMENT_METHODS.COD
-      ),
+      type: DataTypes.ENUM(...Object.values(PAYMENT_METHODS)),
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM(
-        PAYMENT_STATUS.FAILED,
-        PAYMENT_STATUS.PENDING,
-        PAYMENT_STATUS.SUCCESS
-      ),
+      type: DataTypes.ENUM(...Object.values(PAYMENT_STATUS)),
       allowNull: false,
     },
     transactionId: { type: DataTypes.UUID, allowNull: false },
@@ -57,4 +47,4 @@ payment.init(
     paranoid: true,
   }
 );
-export { payment };
+export { Payment };

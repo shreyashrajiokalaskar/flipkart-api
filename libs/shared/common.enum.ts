@@ -1,4 +1,18 @@
 export enum ROLES {
-    ADMIN = 'ADMIN',
-    USER = 'USER'
+  ADMIN = "ADMIN",
+  USER = "USER",
+}
+
+export enum PAYMENT_METHODS {
+  CREDIT_CARD = "CREDIT_CARD",
+  COD = "COD",
+  UPI = "UPI",
+  BANK_TRANSFER = "BANK_TRANSFER",
+  EMI = "EMI",
+}
+
+export enum PAYMENT_STATUS {
+  PENDING = "PENDING",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
 }

@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../../configs/db-connection.config';
+import {sequelize}  from '../../configs/db-connection.config';
 import { TABLE_NAMES } from '../../constants/table-name.constants';
 
 export const ReviewModel = sequelize.define(

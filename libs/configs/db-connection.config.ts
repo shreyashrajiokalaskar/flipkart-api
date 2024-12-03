@@ -1,5 +1,6 @@
 // import logger from "../common/logger";
-import { Sequelize } from "sequelize";
+// import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 import DOT_ENV from "../../config.env";
 
 const { database, username, password, host, port } = DOT_ENV;
@@ -32,4 +33,3 @@ export const databaseConnection = async () => {
     console.info("Something Went Wrong With Database Connection.");
   }
 };
-

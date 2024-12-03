@@ -4,7 +4,8 @@ import * as jwt from "jsonwebtoken";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import CommonError from "../../utils/error.common";
 import { Response } from "express";
-import { User } from "../../models/user.model";
+import db from "../../models"; // Adjust path as necessary
+const { User } = db;
 
 // Login existing user
 const login = async (loginDto: Partial<IUser>) => {

@@ -1,8 +1,8 @@
-import { DataTypes } from 'sequelize';
-import { sequelize } from '../../configs/db-connection.config';
+import { DataTypes } from "sequelize";
+import {sequelize} from "../../configs/db-connection.config";
 
 export const CategoryModel = sequelize.define(
-  'category',
+  "category",
   {
     id: {
       type: DataTypes.UUID,

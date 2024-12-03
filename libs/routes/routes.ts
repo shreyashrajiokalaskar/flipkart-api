@@ -38,6 +38,7 @@ class Router {
       );
     } else {
       this.routes.allRoutes.forEach((route) => {
+        // route.router.init(sequelize);
         return app.use(`/api/${route.path}`, route.router);
       });
     }

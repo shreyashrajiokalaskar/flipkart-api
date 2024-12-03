@@ -1,11 +1,10 @@
 "use strict";
 
 import { DataTypes, Model } from "sequelize";
-import { PAYMENT_METHODS, PAYMENT_STATUS } from "../shared/common.enum";
 import { Sequelize } from "sequelize-typescript";
 
 export default (sequelize: Sequelize) => {
-  class Payment extends Model {
+  class OrderProducts extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,41 +12,59 @@ export default (sequelize: Sequelize) => {
      */
     static associate(models: any) {
       // define association here
+      OrderProducts.belongsTo(models.Product, {
+        foreignKey: "productId",
+        as: "product",
+      });
+      OrderProducts.belongsTo(models.Order, {
+        foreignKey: "orderId",
+        as: "order",
+      });
     }
   }
-  Payment.init(
+  OrderProducts.init(
     {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-        allowNull: false,
       },
-      method: {
-        type: DataTypes.ENUM(...Object.values(PAYMENT_METHODS)),
+      orderId: {
+        type: DataTypes.UUID,
         allowNull: false,
+        references: {
+          model: "Order",
+          key: "id",
+        },
       },
-      status: {
-        type: DataTypes.ENUM(...Object.values(PAYMENT_STATUS)),
+      productId: {
+        type: DataTypes.UUID,
         allowNull: false,
+        references: {
+          model: "Product",
+          key: "id",
+        },
       },
-      transactionId: { type: DataTypes.UUID, allowNull: false },
-      gateway: { type: DataTypes.STRING, allowNull: false },
-      amount: {
+      quantity: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         validate: {
-          min: 0,
+          min: 1,
+        },
+      },
+      price: {
+        type: DataTypes.FLOAT,
+        validate: {
+          min: 0.01,
         },
       },
     },
     {
       sequelize,
-      modelName: "Payment",
-      tableName: "payments",
+      modelName: "OrderProducts",
+      tableName: "orderProducts",
       timestamps: true,
       paranoid: true,
     }
   );
-  return Payment;
+  return OrderProducts;
 };

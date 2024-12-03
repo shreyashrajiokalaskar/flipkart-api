@@ -4,13 +4,13 @@ import axios from "axios";
 import { UniqueConstraintError, ValidationError } from "sequelize";
 import CommonError from "../../utils/error.common";
 import { ROLES } from "../../shared/common.enum";
-import { User } from "../../models/user.model";
-import { Role } from "../../models/role.model";
+import db from "../../models"; // Adjust path as necessary
+const { User, Role } = db;
 
 const createUser = async (userDto: IUser) => {
   userDto.password = bcryptModifiers.encodePassword(userDto.password);
   try {
-    const role = await getIdFromRole(userDto.role ?? ROLES.USER);
+    const role = await getIdFromRole(userDto.role ?? ROLES.BUYER);
     if (userDto.role) {
       delete userDto.role;
     }
@@ -52,6 +52,7 @@ const loginUser = async (userDto: Partial<IUser>) => {
       user.password
     );
     if (isUser) {
+      delete user.roleId;
       return user;
     }
     const errorModified = {
@@ -70,7 +71,10 @@ const loginUser = async (userDto: Partial<IUser>) => {
 
 const getUser = async (email: string) => {
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({
+      where: { email },
+      include: { model: Role, as: "role" },
+    });
     return user?.dataValues;
   } catch (error: any) {
     const errorModified = {
@@ -131,6 +135,7 @@ const setDummyUser = async (user: any) => {
 };
 
 const getIdFromRole = async (role: string) => {
+  console.log(role);
   try {
     const filteredRole = await Role.findOne({
       where: {

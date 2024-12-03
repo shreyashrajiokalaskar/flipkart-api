@@ -2,9 +2,8 @@ import axios from "axios";
 import { DataTypes } from "sequelize";
 import handler from "../../controllers/handler.factory";
 import { APIModifier } from "../../utils/api-features.util";
-import { CategoryModel } from "../category/category.model";
-import { ImageModel } from "../images/image.model";
-import { ProductModel } from "./product.model";
+import db from "../../models"; // Adjust path as necessary
+const { Product, Category } = db;
 
 const getDummyProducts = async () => {
   try {
@@ -14,21 +13,18 @@ const getDummyProducts = async () => {
         headers: { Accept: "application/json", "Accept-Encoding": "identity" },
       }
     );
+    // console.log(products.data.products)
     products.data.products.forEach(async (product: any) => {
       delete product.id;
-      const category = await CategoryModel.findOne({
-        where: { name: product.category },
+      const category = await Category.findOne({
+        where: { slug: product.category },
       });
-      const { images } = product;
-      product.category = category?.dataValues.id;
+      product.categoryId = category?.dataValues.id;
       delete product.thumbnail;
       delete product.images;
-      const productCreated = (await setDummyProducts(product)) as any;
-      const { id } = productCreated;
-      await ImageModel.create({
-        productId: id,
-        images,
-      });
+      console.log(product);
+      // const productCreated = (await setDummyProducts(product)) as any;
+      // return productCreated;
     });
   } catch (error: any) {
     throw new Error(error);
@@ -37,7 +33,7 @@ const getDummyProducts = async () => {
 
 const setDummyProducts = async (product: any) => {
   try {
-    return await ProductModel.create(product);
+    return await Product.create(product);
   } catch (error: any) {
     throw new Error(error);
   }
@@ -45,6 +41,12 @@ const setDummyProducts = async (product: any) => {
 
 const getProducts = async (filterParams?: any) => {
   try {
+    filterParams.sortBy = "price";
+    filterParams.order = "DESC";
+    filterParams.pageSize = 100;
+    console.log(Product.associations); // Should show "category"
+    console.log(Category.associations); // Should show "products"
+
     const features = new APIModifier(filterParams)
       .sort()
       .limitFields()
@@ -52,8 +54,9 @@ const getProducts = async (filterParams?: any) => {
 
     const whereClause: { [key: string]: typeof DataTypes.UUID } = {};
     if (filterParams.id) whereClause["id"] = filterParams.id;
-    return await ProductModel.findAll({
-      include: ImageModel,
+    return await Product.findAll({
+      // include: ImageModel,
+      include: {model: Category, as: 'category'},
       where: whereClause,
       ...features,
     });
@@ -62,12 +65,12 @@ const getProducts = async (filterParams?: any) => {
   }
 };
 
-const getProductById = handler.getOne(ProductModel, {
+const getProductById = handler.getOne(Product, {
   path: "reviews",
 });
 // async (id: string) => {
 //   try {
-//     return await ProductCollection.ProductModel.find({ _id: id }).populate(
+//     return await ProductCollection.Product.find({ _id: id }).populate(
 //       'reviews'
 //     );
 //   } catch (error: any) {
@@ -101,7 +104,7 @@ const getProductStats = async () => {
     //     },
     //   },
     // ]);
-    return await ProductModel.findOne({
+    return await Product.findOne({
       attributes: [],
       raw: true,
     });

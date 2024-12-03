@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../../configs/db-connection.config';
-import { ProductModel } from '../product/product.model';
+import  {sequelize}  from '../../configs/db-connection.config';
 
 export const ImageModel = sequelize.define(
   'image',
@@ -9,10 +8,10 @@ export const ImageModel = sequelize.define(
       allowNull: false,
       primaryKey: true,
       type: DataTypes.UUID,
-      references: {
-        model: ProductModel,
-        key: 'id',
-      },
+      // references: {
+      //   model: ProductModel,
+      //   key: 'id',
+      // },
     },
     images: {
       allowNull: false,

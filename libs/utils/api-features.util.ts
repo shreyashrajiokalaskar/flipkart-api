@@ -1,4 +1,4 @@
-import { sequelize } from '../configs/db-connection.config';
+import {sequelize} from "../configs/db-connection.config";
 
 export class APIModifier {
   filterClause: { [key: string]: any } = {};
@@ -10,11 +10,11 @@ export class APIModifier {
   filter() {
     const queryParams = { ...this.filterParams };
     const excludedParams = [
-      'pageNumber',
-      'pageSize',
-      'sortBy',
-      'order',
-      'fields',
+      "pageNumber",
+      "pageSize",
+      "sortBy",
+      "order",
+      "fields",
     ];
     excludedParams.forEach((param) => delete queryParams[param]);
     // Filtering
@@ -22,8 +22,8 @@ export class APIModifier {
     const whereClause: { [key: string]: any } = {};
     whereClause[searchColumn] = sequelize.where(
       searchColumn,
-      'LIKE',
-      '%' + searchString + '%'
+      "LIKE",
+      "%" + searchString + "%"
     );
     this.filterClause = {
       ...this.filterClause,
@@ -33,7 +33,7 @@ export class APIModifier {
 
   sort() {
     if (this.filterParams.sortBy) {
-      const order = this.filterParams.order || 'ASC';
+      const order = this.filterParams.order || "ASC";
       const sortBy = this.filterParams.sortBy;
       this.filterClause = {
         ...this.filterClause,
@@ -45,7 +45,7 @@ export class APIModifier {
 
   limitFields() {
     if (this.filterParams.attributes) {
-      const attributes = this.filterParams.attributes.split(',');
+      const attributes = this.filterParams.attributes.split(",");
       this.filterClause = {
         ...this.filterClause,
         attributes,

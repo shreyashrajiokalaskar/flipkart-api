@@ -1,10 +1,10 @@
 // const nodeCron = require('node-cron');
 import * as nodeCron from "node-cron";
+import productService from "../routes/product/product.service";
 
 const productsCron = () => {
   const productsCronjob = nodeCron.schedule("10 * * * * *", async () => {
     // await productService.getDummyProducts();
-    // setCategories();
     productsCronjob.start();
   });
 };

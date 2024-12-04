@@ -8,6 +8,8 @@ const DOT_ENV = {
   database: process.env.DB_NAME,
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || "3333"),
-  env: process.env.NODE_ENV
+  env: process.env.NODE_ENV,
+  redisHost: process.env.REDIS_HOST,
+  redisPort: process.env.REDIS_PORT
 };
 export default DOT_ENV;

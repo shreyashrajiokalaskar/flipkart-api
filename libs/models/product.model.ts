@@ -11,7 +11,6 @@ export default (sequelize: Sequelize) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models: any) {
-      console.log("models", models);
       Product.belongsTo(models.Category, {
         foreignKey: "categoryId",
         as: "category",

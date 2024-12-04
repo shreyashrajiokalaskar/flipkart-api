@@ -14,7 +14,6 @@ const basename = path.basename(__filename);
 const env = DOT_ENV.env || "dev";
 const config = require("../configs/config")[env]; // Adjust path if needed
 const config2 = require("../configs/config"); // Adjust path if needed
-console.log("CONFIG", config2[env])
 const db: DbInterface = {} as DbInterface;
 
 let sequelize: Sequelize;

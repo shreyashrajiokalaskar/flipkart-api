@@ -135,7 +135,6 @@ const setDummyUser = async (user: any) => {
 };
 
 const getIdFromRole = async (role: string) => {
-  console.log(role);
   try {
     const filteredRole = await Role.findOne({
       where: {

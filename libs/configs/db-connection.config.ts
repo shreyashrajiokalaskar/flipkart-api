@@ -2,6 +2,7 @@
 // import { Sequelize } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import DOT_ENV from "../../config.env";
+import { redisConnection } from "./redis-connection.config";
 
 const { database, username, password, host, port } = DOT_ENV;
 
@@ -27,6 +28,7 @@ export const sequelize = sequelizeInstanceCreation();
 
 export const databaseConnection = async () => {
   const dbConnection = await sequelize.authenticate();
+  await redisConnection.connectRedis();
   if (sequelize) {
     console.info("Database Connected Successfully");
   } else {

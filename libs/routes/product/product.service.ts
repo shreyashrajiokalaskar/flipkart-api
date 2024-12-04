@@ -13,7 +13,6 @@ const getDummyProducts = async () => {
         headers: { Accept: "application/json", "Accept-Encoding": "identity" },
       }
     );
-    // console.log(products.data.products)
     products.data.products.forEach(async (product: any) => {
       delete product.id;
       const category = await Category.findOne({
@@ -22,7 +21,6 @@ const getDummyProducts = async () => {
       product.categoryId = category?.dataValues.id;
       delete product.thumbnail;
       delete product.images;
-      console.log(product);
       // const productCreated = (await setDummyProducts(product)) as any;
       // return productCreated;
     });
@@ -44,8 +42,6 @@ const getProducts = async (filterParams?: any) => {
     filterParams.sortBy = "price";
     filterParams.order = "DESC";
     filterParams.pageSize = 100;
-    console.log(Product.associations); // Should show "category"
-    console.log(Category.associations); // Should show "products"
 
     const features = new APIModifier(filterParams)
       .sort()

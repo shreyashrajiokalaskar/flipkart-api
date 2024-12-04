@@ -6,8 +6,8 @@ import bcryptModifiers from "../utils/bcrypt.util";
 import fs from "fs";
 import { controllerHandler } from "../utils/common-handler";
 import csv from "csv-parser";
-import { User } from "../models/user.model";
-import { City } from "../models/city.model";
+import db from "../models";
+const { User, City } = db;
 const { v4: uuidv4 } = require("uuid");
 
 const signUp = controllerHandler(

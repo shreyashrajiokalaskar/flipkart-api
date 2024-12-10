@@ -1,4 +1,5 @@
-import { Order } from "../../models/order.model";
+import db from "../../models";
+const { Order } = db;
 
 const createOrder = async (req: any, res: any, next: any) => {
   try {

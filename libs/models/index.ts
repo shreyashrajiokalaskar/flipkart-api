@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Sequelize } from "sequelize-typescript";
+import { Model, Sequelize } from "sequelize-typescript";
 import { Dialect } from "sequelize";
 import DOT_ENV from "../../config.env";
 
@@ -41,7 +41,7 @@ fs.readdirSync(__dirname)
       sequelize,
       Sequelize
     );
-    db[model.name] = model;
+    db[model.name] = model as Model;
   });
 
 // Run associations if any exist

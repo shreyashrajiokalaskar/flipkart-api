@@ -11,6 +11,9 @@ import {
   sequelize,
   databaseConnection,
 } from "./libs/configs/db-connection.config";
+import { serve, setup } from "swagger-ui-express";
+import swaggerSpec from './libs/swagger'
+import DOT_ENV from "./config.env";
 
 const app = express();
 
@@ -24,6 +27,9 @@ app.use(helmet()); // Secure HTTP headers
 app.use(express.json({ limit: "10kb" })); // Body parser
 app.use(cors()); // Enable CORS
 
+// Serve Swagger UI
+app.use('/swagger', serve, setup(swaggerSpec));
+
 // Socket.IO Setup
 // const socketServer = http.createServer(app);
 // const io = new Server(socketServer, {
@@ -33,7 +39,7 @@ app.use(cors()); // Enable CORS
 //   },
 // });
 
-const port = process.env.PORT || 3000;
+const port = DOT_ENV.PORT || 3000;
 
 // io.on("connection", (socket) => {
 //   console.log("Socket connected 💀");
@@ -51,6 +57,15 @@ app.listen(port, () => {
   databaseConnection();
 });
 
+  /**
+    * @swagger
+    * /user:
+    *   get:
+    *     summary: Retrieve a list of users
+    *     responses:
+    *       200:
+    *         description: A list of users
+    */
 app.get("/", (req: any, res, next) => {
   res.status(200).json({
     data: "HEY THERE!!!",

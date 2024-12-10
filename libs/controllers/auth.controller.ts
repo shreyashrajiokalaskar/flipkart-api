@@ -121,7 +121,7 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
-  const filePath = `/home/tech/Documents/personal/flipkart-api/${req.file.path}`;
+  const filePath = `/home/tech-alchemy/Documents/self/flipkart-api/${req.file.path}`;
   const results: {
     id: string;
     pincode: number;
@@ -133,6 +133,7 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
   }[] = [];
   const startIndex = (pageNo - 1) * limit;
   const endIndex = pageNo * limit;
+  console.log("STARTED");
   fs.createReadStream(filePath)
     .pipe(csv())
     .on("data", async (data: any) => {
@@ -145,7 +146,7 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
         console.error(`Invalid pincode: ${data.Pincode}`);
         return;
       }
-
+      console.log("PUSHING");
       results.push({
         id: uuidv4(),
         pincode: pincode,

@@ -1,90 +1,39 @@
 "use strict";
 
-import { DataTypes, Model } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
+import { CommonEntity } from "./common.entity";
+import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { User } from "./user.model";
+import { Product } from "./product.model";
+import { ASSET_TYPE } from "../shared/common.enum";
 
-export default (sequelize: Sequelize) => {
-  class Review extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models: any) {
-      // define association here
-      // Polymorphic association using assetType to decide the relationship
-      Review.belongsTo(models.User, {
-        foreignKey: "assetId",
-        constraints: false,
-        as: "seller",
-        scope: {
-          assetType: "SELLER",
-        },
-      });
+@Entity('reviews')
+export class Review extends CommonEntity {
 
-      Review.belongsTo(models.Product, {
-        foreignKey: "assetId",
-        constraints: false,
-        as: "product",
-        scope: {
-          assetType: "PRODUCT",
-        },
-      });
+  @Column({type: 'text', nullable:false})
+  comment?:string;
 
-      // Reviewer association
-      Review.belongsTo(models.User, {
-        foreignKey: "reviewerId",
-        as: "reviewer",
-      });
-    }
+  @Column({type: 'float', nullable: false})
+  rating?:number;
 
-    static getAssetInclude(assetType: string) {
-      if (assetType === "SELLER") {
-        return { model: sequelize.models.User, as: "seller" };
-      }
-      if (assetType === "PRODUCT") {
-        return { model: sequelize.models.Product, as: "product" };
-      }
-      return null;
-    }
-  }
-  Review.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-      },
-      reviewerId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "User",
-          key: "id",
-        },
-      },
-      assetId: { type: DataTypes.UUID, allowNull: false },
-      rating: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        validate: {
-          min: 0,
-          max: 5,
-        },
-      },
-      comment: { type: DataTypes.TEXT, allowNull: true },
-      assetType: {
-        type: DataTypes.ENUM("PRODUCT", "SELLER"),
-        allowNull: false,
-        defaultValue: "PRODUCT",
-      },
-    },
-    {
-      sequelize,
-      modelName: "Review",
-      tableName: "reviews",
-    }
-  );
-  return Review;
-};
+  @Column({type: 'enum', enum: ASSET_TYPE, default: ASSET_TYPE.PRODUCT})
+  assetType?:ASSET_TYPE;
+
+  @Column({ type: "uuid", nullable:false })
+  reviewerId?: string;
+
+  @ManyToOne(()=> User, (user)=> user.reviews, {onDelete: "CASCADE"})
+  @JoinColumn({name: "reviewerId"})
+  reviewer?:User;
+
+  // assetId - productId or sellerId
+  @Column({type: 'uuid', nullable:false})
+  assetId?:string;
+
+  @ManyToOne(()=> Product, (product)=> product.reviews)
+  @JoinColumn({name: 'assetId'})
+  product?:Product;
+
+  @ManyToOne(()=> User, (user)=> user.reviews)
+  @JoinColumn({name: 'assetId'})
+  seller?:User;
+} 

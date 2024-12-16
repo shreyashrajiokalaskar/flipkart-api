@@ -1,73 +1,44 @@
-"use strict";
+import { CommonEntity } from "./common.entity";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { Category } from "./category.model";
+import { Review } from "./review.model";
+import { OrderProduct } from "./order-products.model";
+import { Order } from "./order.model";
 
-import { DataTypes, Model } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
+@Entity('products')
+export class Product extends CommonEntity {
 
-export default (sequelize: Sequelize) => {
-  class Product extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models: any) {
-      Product.belongsTo(models.Category, {
-        foreignKey: "categoryId",
-        as: "category",
-      });
-      // define association here
-    }
-  }
-  Product.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-      },
-      categoryId: {
-        type: DataTypes.UUID,
-        references: {
-          model: "Category",
-          key: "id",
-        },
-      },
-      title: { type: DataTypes.STRING, allowNull: false },
-      description: { type: DataTypes.STRING, allowNull: false },
-      price: { type: DataTypes.FLOAT, allowNull: false },
-      stock: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-          min: 0,
-          isInt: true,
-        },
-      },
-      discountPercentage: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        validate: {
-          max: 100,
-          min: 0,
-        },
-      },
-      minOrderQuantity: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 1,
-        validate: {
-          min: 1,
-          isInt: true,
-        },
-      },
-    },
-    {
-      sequelize,
-      modelName: "Product",
-      tableName: "products",
-    }
-  );
+  @Column({type: 'text', nullable:false})
+  title?:string;
 
-  return Product;
-};
+  @Column({type: 'text', nullable:false})
+  description?:string;
+
+  @Column({type: 'numeric', nullable:false})
+  price?:number;
+
+  @Column({type: 'numeric', nullable:false})
+  stock?:number;
+
+  @Column({type: 'float', nullable:false})
+  discountPercentage?:number;
+
+  @Column({type: 'numeric', nullable:false, default: 1})
+  minOrderQuantity?:number;
+
+  @Column({type: 'uuid', nullable:false})
+  categoryId?:string;
+
+  @ManyToOne(()=> Category, (category)=> category.products)
+  @JoinColumn({name: 'categoryId'})
+  category?:Category;
+
+  @OneToMany(()=> Review, (review)=> review.product)
+  reviews?:Review[];
+
+  @OneToMany(()=> OrderProduct, (orderProduct) => orderProduct.product)
+  orderProducts?:OrderProduct[];
+
+  @ManyToMany(()=> Order, (order)=> order.products)
+  orders?:Order[]
+}

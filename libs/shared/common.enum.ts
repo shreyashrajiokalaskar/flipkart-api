@@ -30,3 +30,8 @@ export enum ORDER_STATUS {
   CANCELLED = "CANCELLED",
   FAILED = "FAILED",
 }
+
+export enum ASSET_TYPE {
+  PRODUCT = "PRODUCT",
+  SELLER = "SELLER"
+}

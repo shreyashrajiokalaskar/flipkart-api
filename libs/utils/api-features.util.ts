@@ -1,4 +1,3 @@
-import {sequelize} from "../configs/db-connection.config";
 
 export class APIModifier {
   filterClause: { [key: string]: any } = {};
@@ -20,11 +19,11 @@ export class APIModifier {
     // Filtering
     const { searchColumn, searchString } = queryParams;
     const whereClause: { [key: string]: any } = {};
-    whereClause[searchColumn] = sequelize.where(
-      searchColumn,
-      "LIKE",
-      "%" + searchString + "%"
-    );
+    // whereClause[searchColumn] = connectionManager.where(
+    //   searchColumn,
+    //   "LIKE",
+    //   "%" + searchString + "%"
+    // );
     this.filterClause = {
       ...this.filterClause,
     };

@@ -1,90 +1,50 @@
 "use strict";
 
-import { DataTypes, Model } from "sequelize";
-import { ORDER_STATUS } from "../shared/common.enum";
-import { Sequelize } from "sequelize-typescript";
+import { CommonEntity } from "./common.entity";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { User } from "./user.model";
+import { Product } from "./product.model";
+import { OrderProduct } from "./order-products.model";
+import { Address } from "./address.model";
+import { Payment } from "./payment.model";
 
-export default (sequelize: Sequelize) => {
-  class Order extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models: any) {
-      Order.belongsTo(models.User, {
-        foreignKey: "userId",
-        as: "user",
-      });
-      Order.belongsTo(models.Address, {
-        foreignKey: "addressId",
-        as: "address",
-      });
-      Order.hasMany(models.Payment, {
-        foreignKey: "paymentId",
-        as: "payment",
-      });
+@Entity('orders')
+export class Order extends CommonEntity {
 
-      Order.belongsToMany(models.Product, {
-        through: "OrderProducts",
-        foreignKey: "orderId",
-        otherKey: "productId",
-        as: "products",
-      });
-    }
-  }
-  Order.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-        primaryKey: true,
-      },
-      userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "User",
-          key: "id",
-        },
-      },
-      addressId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "Address",
-          key: "id",
-        },
-      },
-      status: {
-        type: DataTypes.ENUM(...Object.values(ORDER_STATUS)),
-        allowNull: false,
-      },
-      paymentId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "Payment",
-          key: "id",
-        },
-      },
-      amount: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-        validate: {
-          min: 0,
-        },
-      },
-    },
-    {
-      sequelize,
-      modelName: "Order",
-      tableName: "orders",
-      timestamps: true,
-      paranoid: true,
-    }
-  );
+  @Column({type: 'uuid', nullable:false})
+  userId?: string;
 
-  return Order;
-};
+  @Column({type: 'uuid', nullable:false})
+  productId?: string;
+
+  @Column({type: 'uuid', nullable:false})
+  addressId?: string;
+
+  @Column({type: 'numeric', nullable:false})
+  quantity?:number;
+
+  @Column({type: 'float', nullable:false})
+  price?:number;
+
+  @ManyToOne(()=> Address, (address)=> address.orders)
+  @JoinColumn({name: 'addressId'})
+  address?:Address;
+  
+  @ManyToOne(()=> User, (user) => user.orders)
+  user?:User;
+
+  @ManyToMany(()=> Product, (product)=> product.orders)
+  @JoinTable({
+    name: 'orderProducts',
+    joinColumn: { name: 'orderId', referencedColumnName: 'id'},
+    inverseJoinColumn: { name: 'productId', referencedColumnName: 'id'}
+  })
+  products?:Product[]
+
+  @OneToMany(()=> OrderProduct,(orderProduct)=> orderProduct.product)
+  orderProducts?:OrderProduct[];
+
+  @OneToMany(()=> Payment, (payment)=> payment.order)
+  payment?: Payment;
+
+}

@@ -1,19 +1,13 @@
 import express, { Request, Response, NextFunction } from "express";
-import { Server } from "socket.io";
-import * as http from "http";
 import helmet from "helmet";
 import path from "path";
-import { cronService } from "./libs";
 import cors from "cors";
 import CommonError from "./libs/utils/error.common";
 import Router from "./libs/routes/routes";
-import {
-  sequelize,
-  databaseConnection,
-} from "./libs/configs/db-connection.config";
 import { serve, setup } from "swagger-ui-express";
-import swaggerSpec from './libs/swagger'
+import swaggerSpec from './libs/swagger';
 import DOT_ENV from "./config.env";
+import { connectionManager } from "./libs/configs/db-connection.config";
 
 const app = express();
 
@@ -52,9 +46,9 @@ const port = DOT_ENV.PORT || 3000;
 //     `➡ Socket Listening at http://localhost:${process.env.SOCKET_PORT}/api`
 //   );
 // });
-app.listen(port, () => {
+app.listen(port,async  () => {
   console.log(`➡ Listening at http://localhost:${port}/api`);
-  databaseConnection();
+  await connectionManager.fetchDbConnection();
 });
 
   /**

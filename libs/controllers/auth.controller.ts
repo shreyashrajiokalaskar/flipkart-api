@@ -6,8 +6,8 @@ import bcryptModifiers from "../utils/bcrypt.util";
 import fs from "fs";
 import { controllerHandler } from "../utils/common-handler";
 import csv from "csv-parser";
-import db from "../models";
-const { User, City } = db;
+import { User } from "../models/user.model";
+import { City } from "../models/city.model";
 const { v4: uuidv4 } = require("uuid");
 
 const signUp = controllerHandler(
@@ -61,12 +61,7 @@ const resetPassword = controllerHandler(
       .update(req.params.token)
       .digest("hex");
 
-    const user = (await User.findOne({
-      where: {
-        resetToken: hashedToken,
-        resetTokenExpires: { $gt: Date.now() },
-      },
-    })) as any;
+    const user = (await User.findOne({where:{email: ''}})) as any;
 
     if (!user) {
       res.status(400).json({ data: `Token is invalid`, status: 400 });
@@ -92,27 +87,25 @@ const forgotPassword = async (req: Request, res: Response, next: any) => {
     if (!user) {
       res.status(404).json({ data: "User not found!", status: 404 });
     }
-    const resetToken = user.resetPasswordToken();
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/api/auth/reset-password/${resetToken}`;
+    // const resetToken = user.resetPasswordToken();
+    // const resetURL = `${req.protocol}://${req.get(
+    //   "host"
+    // )}/api/auth/reset-password/${resetToken}`;
 
-    const message = `Forgot your password? Reset password at ${resetURL}`;
+    // const message = `Forgot your password? Reset password at ${resetURL}`;
 
-    await user.save();
+    // await user.save();
     // await sendEmail({
     //   email: user.email,
     //   message,
     //   subject: "Reset Password Token (Valid for 10 min)",
     // });
-    res.status(200).json({ data: `Token sent to ${user.email}`, status: 200 });
+    res.status(200).json({ data: `Token sent to ${user?.email}`, status: 200 });
   } catch (error: any) {
-    user.resetToken = undefined;
-    user.resetTokenExpires = undefined;
-    await user.save();
+    // await user.save();
     res
       .status(500)
-      .json({ data: `Token could not be sent to ${user.email}`, status: 500 });
+      .json({ data: `Token could not be sent to ${user?.email}`, status: 500 });
   }
 };
 

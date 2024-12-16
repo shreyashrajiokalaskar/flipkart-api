@@ -1,66 +1,40 @@
-"use strict";
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../configs/db-connection.config";
-import { Sequelize } from "sequelize-typescript";
 
-export default (sequelize: Sequelize) => {
-  class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models: any) {
-      // define association here
-      User.belongsTo(models.Role, { foreignKey: "roleId", as: "role" });
-      User.hasMany(models.Address, {
-        foreignKey: "userId",
-        as: "addresses",
-      });
-      User.hasMany(models.Order, {
-        foreignKey: "userId",
-        as: "orders",
-      });
-      User.hasMany(models.Review, {
-        foreignKey: "reviewerId",
-        as: "reviews",
-      });
-      User.hasMany(models.Review, {
-        foreignKey: "assetId",
-        as: "sellerReviews",
-        constraints: false,
-      });
-    }
-  }
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { CommonEntity } from "./common.entity";
+import { Role } from "./role.model";
+import { Address } from "./address.model";
+import { Review } from "./review.model";
+import { Order } from "./order.model";
 
-  User.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        allowNull: false,
-        defaultValue: DataTypes.UUIDV4,
-      },
-      firstName: { type: DataTypes.STRING, allowNull: false },
-      lastName: { type: DataTypes.STRING, allowNull: false },
-      email: { type: DataTypes.STRING, allowNull: false, unique: true },
-      password: { type: DataTypes.STRING, allowNull: false },
-      roleId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "role",
-          key: "id",
-        },
-      },
-    },
-    {
-      sequelize,
-      modelName: "User",
-      tableName: "users",
-      paranoid: true,
-      timestamps: true,
-    }
-  );
-  return User;
-};
+
+@Entity("users")
+export class User extends CommonEntity {
+
+  @Column({type:'varchar', nullable: false})
+  firstName?:string;
+
+  @Column({type:'varchar', nullable: false})
+  lastName?:string;
+
+  @Column({type: 'varchar', nullable:false, unique:true})
+  email?:string;
+
+  @Column({type:'varchar', nullable: false})
+  password?:string;
+
+  @Column({type: 'uuid', nullable:false})
+  roleId?:string;
+
+  @ManyToOne(()=> Role, (role:Role) => role.users)
+  @JoinColumn({name: 'roleId'})
+  role?:Role;
+
+  @OneToMany(()=> Address, (address)=> address.user)
+  addresses?: Address[]
+
+  @OneToMany(()=> Review, (review)=> review.reviewer)
+  reviews?: Review[]
+
+  @OneToMany(()=> Order, (order)=> order.user)
+  orders?: Order[]
+}

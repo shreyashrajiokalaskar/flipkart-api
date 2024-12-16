@@ -1,48 +1,22 @@
-"use strict";
-import { DataTypes, Model } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
+import { CommonEntity } from "./common.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Address } from "./address.model";
 
-export default (sequelize: Sequelize) => {
-  class City extends Model {
-    static associate(models: any) {
-      City.hasMany(models.Address, {
-        foreignKey: "cityId",
-        as: "addresses",
-      });
-    }
-  }
-  City.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-      },
-      pincode: {
-        type: DataTypes.NUMBER,
-        allowNull: false,
-      },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      district: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      state: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-    },
-    {
-      sequelize,
-      modelName: "City",
-      tableName: "cities",
+@Entity("cities")
+export class City extends CommonEntity {
 
-    }
-  );
+  @Column({type: 'number', nullable: false})
+  pincode?:number;
 
-  return City;
-};
+  @Column({type: 'string', nullable: false})
+  name?:string;
+
+  @Column({type: 'string', nullable: false})
+  district?:string;
+
+  @Column({type: 'string', nullable: false})
+  state?:string;
+
+  @OneToMany(()=> Address, (address)=> address.city)
+  addresses?: Address[]
+}

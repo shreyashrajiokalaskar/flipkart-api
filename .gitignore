@@ -1,4 +1,5 @@
 node_modules
+node_modules/*
 
 # Ignore package-lock.json
 package-lock.json
@@ -7,3 +8,5 @@ package-lock.json
 # Ignore .env file
 .env
 dist
+
+./node_modules

@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import productService from "../routes/product/product.service";
-// import  Product  from "../models/product.model";
-import db from "../models"; // Adjust path as necessary
 import { redisConnection } from "../configs/redis-connection.config";
-const { Product, Category } = db;
+import { Product } from "../models/product.model";
 
 const getProducts = async (req: Request, res: Response) => {
   try {
@@ -41,13 +39,11 @@ const getProductById = async (req: Request, res: Response) => {
       console.log("FETCHING FROM REDIS");
       products = JSON.parse(productFromCache);
     } else {
-      products = await Product.findByPk(id, {
-        include: {
-          model: Category,
-          as: "category",
-        },
+      products = await Product.findOne({
+        where: {id},
+        relations: ["category"]
       });
-      products = {...products.dataValues};
+      products = {...products};
       redisConnection.redis.set(
         `product:${id}`,
         JSON.stringify(products)

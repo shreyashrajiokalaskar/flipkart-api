@@ -1,35 +1,17 @@
-"use strict";
-import { DataTypes, Model } from "sequelize";
-// import { sequelize } from "../configs/db-connection.config";
-import { Sequelize } from "sequelize-typescript";
+import { CommonEntity } from "./common.entity";
+import { Column, Entity, OneToMany } from "typeorm";
+import { Product } from "./product.model";
 
-export default (sequelize: Sequelize) => {
-  class Category extends Model {
-    static associate(models: any) {
-      // define association here
-      Category.hasMany(models.Product, {
-        foreignKey: "categoryId",
-        as: "products",
-      });
-    }
-  }
-  Category.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
-        allowNull: false,
-      },
-      slug: { type: DataTypes.STRING, allowNull: false, unique: true },
-      category: { type: DataTypes.STRING, allowNull: false, unique: true },
-    },
-    {
-      sequelize,
-      modelName: "Category",
-      tableName: "categories",
 
-    }
-  );
-  return Category;
-};
+@Entity('categories')
+export class Category extends CommonEntity {
+  
+  @Column({type:'string', nullable:false})
+  slug?:string;
+
+  @Column({type:'string', nullable:false})
+  name?:string;
+
+  @OneToMany(()=> Product, (product) => product.category)
+  products?:Product[];
+}

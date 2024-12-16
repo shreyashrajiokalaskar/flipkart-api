@@ -1,11 +1,11 @@
 import { IUser } from "../../interfaces/auth.interface";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import axios from "axios";
-import { UniqueConstraintError, ValidationError } from "sequelize";
 import CommonError from "../../utils/error.common";
 import { ROLES } from "../../shared/common.enum";
-import db from "../../models"; // Adjust path as necessary
-const { User, Role } = db;
+import { User } from "../../models/user.model";
+import { Role } from "../../models/role.model";
+import { connectionManager } from "../..";
 
 const createUser = async (userDto: IUser) => {
   userDto.password = bcryptModifiers.encodePassword(userDto.password);
@@ -14,26 +14,12 @@ const createUser = async (userDto: IUser) => {
     if (userDto.role) {
       delete userDto.role;
     }
-    const userData = { ...userDto, roleId: role?.toJSON().id };
+    const userData = { ...userDto, roleId: role?.id };
     let user = await User.create(userData as any);
     user = user.toJSON();
     delete (user as any).password;
     return user;
   } catch (error: any) {
-    if (error instanceof ValidationError) {
-      const errorModified = {
-        message: error.errors.map((err: any) => err.message).join(", "),
-        statusCode: 400,
-      };
-      throw new CommonError(errorModified);
-    }
-    if (error instanceof UniqueConstraintError) {
-      const errorModified = {
-        message: "Duplicate field value",
-        statusCode: 409,
-      };
-      throw new CommonError(errorModified);
-    }
 
     // For all other errors
     const errorModified = {
@@ -49,7 +35,7 @@ const loginUser = async (userDto: Partial<IUser>) => {
   if (user) {
     const isUser = await bcryptModifiers.isValidPassword(
       userDto.password as string,
-      user.password
+      user.password as string
     );
     if (isUser) {
       delete user.roleId;
@@ -73,9 +59,9 @@ const getUser = async (email: string) => {
   try {
     const user = await User.findOne({
       where: { email },
-      include: { model: Role, as: "role" },
+      relations: ["role"]
     });
-    return user?.dataValues;
+    return user;
   } catch (error: any) {
     const errorModified = {
       message: error.message,
@@ -87,15 +73,9 @@ const getUser = async (email: string) => {
 
 const updateUser = async (userDto: IUser) => {
   try {
-    return await User.update(
+    return await User.update(userDto.id as string,
       {
         password: userDto.password,
-        updatedAt: Date.now(),
-      },
-      {
-        where: {
-          id: userDto.id,
-        },
       }
     );
   } catch (error: any) {
@@ -121,14 +101,12 @@ const setDummyUser = async (user: any) => {
     const { firstName, lastName, email, image, address } = user;
     const password = bcryptModifiers.encodePassword("password@123");
     address.coordinates = [address.coordinates.lat, address.coordinates.lng];
-    await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      image,
-      // address,
-    });
+    await connectionManager.getRepo(User).create({
+        firstName,
+        lastName,
+        email,
+        password,
+    }).save();
   } catch (error: any) {
     throw new CommonError(error);
   }
@@ -138,7 +116,7 @@ const getIdFromRole = async (role: string) => {
   try {
     const filteredRole = await Role.findOne({
       where: {
-        role,
+        name: role,
       },
     });
     return filteredRole;

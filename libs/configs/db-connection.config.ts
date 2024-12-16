@@ -1,38 +1,39 @@
-// import logger from "../common/logger";
-// import { Sequelize } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
 import DOT_ENV from "../../config.env";
-import { redisConnection } from "./redis-connection.config";
+import { DataSource, EntityTarget, ObjectLiteral, Repository } from "typeorm";
 
 const { database, username, password, host, DB_PORT } = DOT_ENV;
 
-export const sequelizeInstanceCreation = () => {
-  return new Sequelize(
-    `${database as string}`,
-    `${username as string}`,
-    `${password as string}`,
-    {
-      host: host,
-      dialect: "postgres",
-      port: DB_PORT ?? 5432,
-      pool: {
-        max: 20,
-        min: 0,
-        acquire: 60000,
-      },
+const AppDataSource = new DataSource({
+  type: "postgres",
+  host,
+  port: DB_PORT ?? 5432,
+  username,
+  password,
+  database,
+  synchronize:false,
+  logging:true,
+  entities: ["libs/models/*.ts"],
+  migrations: ["libs/migrations/*.ts"]
+})
+
+
+export class ConnectionManager {
+  connection?: DataSource;
+
+  public async fetchDbConnection() : Promise<DataSource>{
+    try {
+      if(!this.connection){
+        this.connection = await AppDataSource.initialize();
+      }
+      return this.connection;
+    } catch (error) {
+      throw error;
     }
-  );
-};
-
-export const sequelize = sequelizeInstanceCreation();
-
-export const databaseConnection = async () => {
-  const dbConnection = await sequelize.authenticate();
-  // await redisConnection.connectRedis();
-  console.log(database, username, password, host, DB_PORT);
-  if (sequelize) {
-    console.info("Database Connected Successfully");
-  } else {
-    console.info("Something Went Wrong With Database Connection.");
   }
-};
+
+  public getRepo<T extends ObjectLiteral>(target: EntityTarget<T>): Repository<T>{
+    return this.connection?.getRepository(target) as Repository<T>;
+  }
+}
+
+export const connectionManager = new ConnectionManager();

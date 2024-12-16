@@ -1,9 +1,8 @@
 import axios from "axios";
-import { DataTypes } from "sequelize";
 import handler from "../../controllers/handler.factory";
 import { APIModifier } from "../../utils/api-features.util";
-import db from "../../models"; // Adjust path as necessary
-const { Product, Category } = db;
+import { Category } from "../../models/category.model";
+import { Product } from "../../models/product.model";
 
 const getDummyProducts = async () => {
   try {
@@ -18,7 +17,7 @@ const getDummyProducts = async () => {
       const category = await Category.findOne({
         where: { slug: product.category },
       });
-      product.categoryId = category?.dataValues.id;
+      product.categoryId = category?.id;
       delete product.thumbnail;
       delete product.images;
       // const productCreated = (await setDummyProducts(product)) as any;
@@ -48,12 +47,12 @@ const getProducts = async (filterParams?: any) => {
       .limitFields()
       .paginate().filterClause;
 
-    const whereClause: { [key: string]: typeof DataTypes.UUID } = {};
+    const whereClause: { [key: string]: string } = {};
     if (filterParams.id) whereClause["id"] = filterParams.id;
-    return await Product.findAll({
+    return await Product.find({
       // include: ImageModel,
-      include: {model: Category, as: 'category'},
       where: whereClause,
+      relations: ['category'],
       ...features,
     });
   } catch (error: any) {
@@ -101,8 +100,6 @@ const getProductStats = async () => {
     //   },
     // ]);
     return await Product.findOne({
-      attributes: [],
-      raw: true,
     });
   } catch (error) {
     throw new Error("ERROR");

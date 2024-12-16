@@ -4,8 +4,7 @@ import * as jwt from "jsonwebtoken";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import CommonError from "../../utils/error.common";
 import { Response } from "express";
-import db from "../../models"; // Adjust path as necessary
-const { User } = db;
+import { User } from "../../models/user.model";
 
 // Login existing user
 const login = async (loginDto: Partial<IUser>) => {
@@ -49,7 +48,7 @@ const changePassword = async (userDto: Partial<IUser>) => {
     const user = await userService.getUser(userDto.email as string);
     const isPasswordValid = await bcryptModifiers.isValidPassword(
       userDto.password as string,
-      user.password
+      user?.password as string
     );
     // if (isPasswordValid) {
     //   const isPasswordSame = await bcryptModifiers.isValidPassword(
@@ -78,7 +77,7 @@ const AuthGuard = async (req: any, res: any, next: any) => {
         token,
         process.env.SECRET_KEY as string
       );
-      const user = await User.findByPk(decoded.id);
+      const user = await User.findOne({where:{id:decoded.id}});
       // if (user?.validatePassword(decoded.iat)) {
       //   throw new Error('User recently changed their password');
       // }

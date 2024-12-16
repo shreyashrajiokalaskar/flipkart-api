@@ -1,70 +1,38 @@
 "use strict";
 
-import { DataTypes, Model } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
+import { CommonEntity } from "./common.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Product } from "./product.model";
+import { Order } from "./order.model";
+import { ORDER_STATUS } from "../shared/common.enum";
 
-export default (sequelize: Sequelize) => {
-  class OrderProducts extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models: any) {
-      // define association here
-      OrderProducts.belongsTo(models.Product, {
-        foreignKey: "productId",
-        as: "product",
-      });
-      OrderProducts.belongsTo(models.Order, {
-        foreignKey: "orderId",
-        as: "order",
-      });
-    }
-  }
-  OrderProducts.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-      },
-      orderId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "Order",
-          key: "id",
-        },
-      },
-      productId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-          model: "Product",
-          key: "id",
-        },
-      },
-      quantity: {
-        type: DataTypes.INTEGER,
-        validate: {
-          min: 1,
-        },
-      },
-      price: {
-        type: DataTypes.FLOAT,
-        validate: {
-          min: 0.01,
-        },
-      },
-    },
-    {
-      sequelize,
-      modelName: "OrderProducts",
-      tableName: "orderProducts",
-      timestamps: true,
-      paranoid: true,
-    }
-  );
-  return OrderProducts;
-};
+@Entity('orderProducts')
+export class OrderProduct extends CommonEntity {
+
+  @Column({type:'uuid', nullable:false})
+  orderId?:string;
+
+  @Column({type:'uuid', nullable:false})
+  productId?:string;
+
+  @Column({type: 'numeric', nullable:false})
+  quantity?:number;
+
+  @Column({type: 'float', nullable:false})
+  price?:number;
+
+  @Column({
+    type: 'enum',
+    enum: Object.keys(ORDER_STATUS),
+    default: ORDER_STATUS.PLACED
+  })
+  status?:ORDER_STATUS;
+
+  @ManyToOne(()=> Product, (product)=> product.orderProducts)
+  @JoinColumn({name: 'productId'})
+  product?:Product
+
+  @ManyToOne(()=> Order, (order)=> order.orderProducts)
+  @JoinColumn({name: 'orderId'})
+  order?:Order
+}

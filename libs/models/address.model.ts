@@ -1,50 +1,24 @@
-"use strict";
+import { CommonEntity } from "./common.entity";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { City } from "./city.model";
+import { User } from "./user.model";
+import { Order } from "./order.model";
 
-import { DataTypes, Model } from "sequelize";
-import { Sequelize } from "sequelize-typescript";
+@Entity("addresses")
+export class Address extends CommonEntity {
 
-export default (sequelize: Sequelize) => {
-  class Address extends Model {
-    static associate(models: any) {
-      Address.belongsTo(models.City, {
-        foreignKey: "cityId",
-        as: "city",
-      });
-      Address.belongsTo(models.User, {
-        foreignKey: "userId",
-        as: "user",
-      });
-    }
-  }
-  Address.init(
-    {
-      id: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
-      },
-      lane: { type: DataTypes.STRING, allowNull: false },
-      landmark: { type: DataTypes.STRING, allowNull: true },
-      userId: {
-        type: DataTypes.UUID,
-        references: {
-          model: "User",
-          key: "id",
-        },
-      },
-      cityId: {
-        type: DataTypes.UUID,
-        references: {
-          model: "City",
-          key: "id",
-        },
-      },
-    },
-    {
-      sequelize,
-      modelName: "Address",
-      tableName: "addresses",
-    }
-  );
-  return Address;
-};
+  @Column({type: 'text',nullable: false})
+  lane?:string;
+
+  @Column({type: 'text',nullable: true})
+  landmark?:string;
+
+  @ManyToOne(()=> User, (user)=> user.addresses)
+  user?: User;
+
+  @ManyToOne(()=> City, (city)=> city.addresses)
+  city?:City;
+
+  @OneToMany(()=> Order, (order)=> order.address)
+  orders?:Order[];
+}

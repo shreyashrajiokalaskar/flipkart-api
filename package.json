@@ -7,10 +7,12 @@
     "start": "nodemon app.ts",
     "build": "tsc --project ./",
     "start:dev": "ts-node-dev --respawn --transpile-only app.ts",
-    "typeorm": "typeorm-ts-node-esm",
-    "migration:generate": "npm run typeorm migration:generate -- -d ./src/data-source.ts",
-    "migration:run": "npm run typeorm migration:run -- -d ./src/data-source.ts",
-    "migration:revert": "npm run typeorm migration:revert -- -d ./src/data-source.ts",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:create": "cd ./src/migrations && npm run typeorm -- migration:create ./libs/migrations/$npm_config_name",
+    "typeorm:up": "npm run typeorm  -- -d ./libs/configs/data-source.ts  migration:run",
+    "typeorm:generate-migration": "npm run typeorm migration:generate  -- -d ./libs/configs/data-source.ts ./libs/migrations/$npm_config_name ",
+    "typeorm:down": "npm run typeorm  -- -d ./libs/configs/data-source.ts migration:revert",
+    "typeorm:show": "npm run typeorm migration:show",
     "seed:run": "npx sequelize-cli db:seed:all --env dev",
     "seed:undo": "npx sequelize-cli db:seed:undo --env dev"
   },
@@ -68,8 +70,9 @@
     "nodemon": "^2.0.21",
     "prettier": "^2.6.2",
     "ts-jest": "28.0.5",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "~4.8.2"
   }
 }

@@ -1,15 +1,33 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "target": "ES6",
-    "module": "CommonJS",
-    "outDir": "./dist",
-    "rootDir": ".",
+    "strictPropertyInitialization": false,
+    "noEmitOnError": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["node"]
+    "target": "ES2022",
+    "module": "CommonJS",
+    "allowJs": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "Node",
+    "alwaysStrict": true,
+    "strict": true,
+    "baseUrl": "libs",
+    "outDir": "./build/",
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      }
+    ],
+    "paths": {
+      "@constants/*": ["constants/*"],
+      "@configs/*": ["configs/*"],
+      "@entities/*": ["entities/*"],
+      "@routes/*": ["routes/*"]
+    }
   },
-  "include": ["libs/**/*"]
+  "exclude": ["build/*"],
+  "include": ["index.ts", "libs/**/*"]
 }

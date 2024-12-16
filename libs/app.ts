@@ -2,12 +2,12 @@ import express, { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
 import path from "path";
 import cors from "cors";
-import CommonError from "./libs/utils/error.common";
-import Router from "./libs/routes/routes";
+import CommonError from "./utils/error.common";
+import Router from "./routes/routes";
 import { serve, setup } from "swagger-ui-express";
-import swaggerSpec from './libs/swagger';
-import DOT_ENV from "./config.env";
-import { connectionManager } from "./libs/configs/db-connection.config";
+import DOT_ENV from "../config.env";
+import { connectionManager } from "./configs/db-connection.config";
+import swaggerSpec from "libs/swagger";
 
 const app = express();
 

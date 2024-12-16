@@ -5,16 +5,16 @@ import { Address } from "./address.entity";
 @Entity("cities")
 export class City extends CommonEntity {
 
-  @Column({type: 'number', nullable: false})
+  @Column({type: 'integer', nullable: false})
   pincode?:number;
 
-  @Column({type: 'string', nullable: false})
+  @Column({type: 'varchar', nullable: false})
   name?:string;
 
-  @Column({type: 'string', nullable: false})
+  @Column({type: 'varchar', nullable: false})
   district?:string;
 
-  @Column({type: 'string', nullable: false})
+  @Column({type: 'varchar', nullable: false})
   state?:string;
 
   @OneToMany(()=> Address, (address)=> address.city)

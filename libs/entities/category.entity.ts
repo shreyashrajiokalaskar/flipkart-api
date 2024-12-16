@@ -6,10 +6,10 @@ import { Product } from "./product.entity";
 @Entity('categories')
 export class Category extends CommonEntity {
   
-  @Column({type:'string', nullable:false})
+  @Column({type:'varchar', nullable:false})
   slug?:string;
 
-  @Column({type:'string', nullable:false})
+  @Column({type:'varchar', nullable:false})
   name?:string;
 
   @OneToMany(()=> Product, (product) => product.category)

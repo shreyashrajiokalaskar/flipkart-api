@@ -1,9 +1,9 @@
 import { CommonEntity } from "./common.entity";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from "typeorm";
-import { Category } from "./category.model";
-import { Review } from "./review.model";
-import { OrderProduct } from "./order-products.model";
-import { Order } from "./order.model";
+import { Category } from "./category.entity";
+import { Review } from "./review.entity";
+import { OrderProduct } from "./order-products.entity";
+import { Order } from "./order.entity";
 
 @Entity('products')
 export class Product extends CommonEntity {

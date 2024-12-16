@@ -2,11 +2,11 @@
 
 import { CommonEntity } from "./common.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
-import { User } from "./user.model";
-import { Product } from "./product.model";
-import { OrderProduct } from "./order-products.model";
-import { Address } from "./address.model";
-import { Payment } from "./payment.model";
+import { User } from "./user.entity";
+import { Product } from "./product.entity";
+import { OrderProduct } from "./order-products.entity";
+import { Address } from "./address.entity";
+import { Payment } from "./payment.entity";
 
 @Entity('orders')
 export class Order extends CommonEntity {

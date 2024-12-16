@@ -1,8 +1,8 @@
 import axios from "axios";
 import handler from "../../controllers/handler.factory";
 import { APIModifier } from "../../utils/api-features.util";
-import { Category } from "../../models/category.model";
-import { Product } from "../../models/product.model";
+import { Category } from "../../entities/category.entity";
+import { Product } from "../../entities/product.entity";
 
 const getDummyProducts = async () => {
   try {

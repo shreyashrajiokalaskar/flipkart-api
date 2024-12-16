@@ -1,5 +1,5 @@
 // import { RoleModel } from '../routes/role/role.model';
-import  db  from '../models'
+import  db  from '../entities'
 const { Role } = db;
 
 export const createUserRole = async function () {

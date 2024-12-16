@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.model";
+import { User } from "./user.entity";
 import { CommonEntity } from "./common.entity";
 
 @Entity("roles")

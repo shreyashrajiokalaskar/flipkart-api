@@ -2,8 +2,8 @@
 
 import { CommonEntity } from "./common.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
-import { Product } from "./product.model";
-import { Order } from "./order.model";
+import { Product } from "./product.entity";
+import { Order } from "./order.entity";
 import { ORDER_STATUS } from "../shared/common.enum";
 
 @Entity('orderProducts')

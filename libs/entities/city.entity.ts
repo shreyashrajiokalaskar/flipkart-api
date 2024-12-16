@@ -1,6 +1,6 @@
 import { CommonEntity } from "./common.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Address } from "./address.model";
+import { Address } from "./address.entity";
 
 @Entity("cities")
 export class City extends CommonEntity {

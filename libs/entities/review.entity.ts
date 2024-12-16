@@ -2,8 +2,8 @@
 
 import { CommonEntity } from "./common.entity";
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
-import { User } from "./user.model";
-import { Product } from "./product.model";
+import { User } from "./user.entity";
+import { Product } from "./product.entity";
 import { ASSET_TYPE } from "../shared/common.enum";
 
 @Entity('reviews')

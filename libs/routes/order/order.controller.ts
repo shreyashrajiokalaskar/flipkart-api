@@ -1,4 +1,4 @@
-import db from "../../models";
+import db from "../../entities";
 const { Order } = db;
 
 const createOrder = async (req: any, res: any, next: any) => {

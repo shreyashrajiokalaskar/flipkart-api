@@ -12,8 +12,9 @@ const AppDataSource = new DataSource({
   database,
   synchronize:false,
   logging:true,
-  entities: ["libs/models/*.ts"],
-  migrations: ["libs/migrations/*.ts"]
+  entities:[...["libs/entities/*.ts"]],
+  migrations: ["libs/migrations/*.ts"],
+  migrationsRun:true
 })
 
 

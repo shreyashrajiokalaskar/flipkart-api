@@ -7,9 +7,10 @@
     "start": "nodemon app.ts",
     "build": "tsc --project ./",
     "start:dev": "ts-node-dev --respawn --transpile-only app.ts",
-    "migrate:create": "npx sequelize-cli migration:create --name",
-    "migrate:up": "npx sequelize-cli db:migrate --env dev",
-    "migrate:down": "npx sequelize-cli db:migrate:undo",
+    "typeorm": "typeorm-ts-node-esm",
+    "migration:generate": "npm run typeorm migration:generate -- -d ./src/data-source.ts",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/data-source.ts",
+    "migration:revert": "npm run typeorm migration:revert -- -d ./src/data-source.ts",
     "seed:run": "npx sequelize-cli db:seed:all --env dev",
     "seed:undo": "npx sequelize-cli db:seed:undo --env dev"
   },

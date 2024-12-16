@@ -3,8 +3,8 @@ import bcryptModifiers from "../../utils/bcrypt.util";
 import axios from "axios";
 import CommonError from "../../utils/error.common";
 import { ROLES } from "../../shared/common.enum";
-import { User } from "../../models/user.model";
-import { Role } from "../../models/role.model";
+import { User } from "../../entities/user.entity";
+import { Role } from "../../entities/role.entity";
 import { connectionManager } from "../..";
 
 const createUser = async (userDto: IUser) => {

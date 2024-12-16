@@ -1,10 +1,10 @@
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { CommonEntity } from "./common.entity";
-import { Role } from "./role.model";
-import { Address } from "./address.model";
-import { Review } from "./review.model";
-import { Order } from "./order.model";
+import { Role } from "./role.entity";
+import { Address } from "./address.entity";
+import { Review } from "./review.entity";
+import { Order } from "./order.entity";
 
 
 @Entity("users")

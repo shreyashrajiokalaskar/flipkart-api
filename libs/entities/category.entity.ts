@@ -1,6 +1,6 @@
 import { CommonEntity } from "./common.entity";
 import { Column, Entity, OneToMany } from "typeorm";
-import { Product } from "./product.model";
+import { Product } from "./product.entity";
 
 
 @Entity('categories')

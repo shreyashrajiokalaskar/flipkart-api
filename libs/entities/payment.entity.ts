@@ -3,7 +3,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from "typeorm";
 import { PAYMENT_METHODS, PAYMENT_STATUS } from "../shared/common.enum";
 import { CommonEntity } from "./common.entity";
-import { Order } from "./order.model";
+import { Order } from "./order.entity";
 
 @Entity('payments')
 export class Payment extends CommonEntity {

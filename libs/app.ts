@@ -7,7 +7,7 @@ import Router from "./routes/routes";
 import { serve, setup } from "swagger-ui-express";
 import DOT_ENV from "../config.env";
 import { connectionManager } from "./configs/db-connection.config";
-import swaggerSpec from "libs/swagger";
+// import swaggerSpec from "libs/swagger";
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(express.json({ limit: "10kb" })); // Body parser
 app.use(cors()); // Enable CORS
 
 // Serve Swagger UI
-app.use('/swagger', serve, setup(swaggerSpec));
+// app.use('/swagger', serve, setup(swaggerSpec));
 
 // Socket.IO Setup
 // const socketServer = http.createServer(app);

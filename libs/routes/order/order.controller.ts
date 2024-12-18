@@ -1,5 +1,7 @@
-import db from "../../entities";
-const { Order } = db;
+// import { Order } from "../../entities/order.entity";
+
+import { Order } from "entities/order.entity";
+
 
 const createOrder = async (req: any, res: any, next: any) => {
   try {
@@ -19,9 +21,9 @@ const getOrder = async (req: any, res: any, next: any) => {
     const { id } = req.params;
     let orders = [] as any;
     if (id) {
-      orders = await Order.findByPk(id);
+      orders = await Order.findBy(id);
     } else {
-      orders = await Order.findAll();
+      orders = await Order.find();
     }
     // .populate({ path: 'userId', select: '-password' })
     // .populate('products')

@@ -25,15 +25,17 @@ export class Review extends CommonEntity {
   @JoinColumn({name: "reviewerId"})
   reviewer?:User;
 
-  // assetId - productId or sellerId
-  @Column({type: 'uuid', nullable:false})
-  assetId?:string;
+  @Column({type: 'uuid', nullable:true})
+  sellerId?:string;
 
-  @ManyToOne(()=> Product, (product)=> product.reviews)
-  @JoinColumn({name: 'assetId'})
+  @Column({type: 'uuid', nullable:true})
+  productId?:string;
+
+  @ManyToOne(()=> Product, (product)=> product.reviews, {nullable:true})
+  @JoinColumn({name: 'productId', referencedColumnName: 'id'})
   product?:Product;
 
-  @ManyToOne(()=> User, (user)=> user.reviews)
-  @JoinColumn({name: 'assetId'})
+  @ManyToOne(()=> User, (user)=> user.reviews, {nullable:true})
+  @JoinColumn({name: 'sellerId', referencedColumnName: 'id'})
   seller?:User;
 } 

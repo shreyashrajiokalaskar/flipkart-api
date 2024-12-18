@@ -22,12 +22,17 @@
       }
     ],
     "paths": {
-      "@constants/*": ["constants/*"],
-      "@configs/*": ["configs/*"],
-      "@entities/*": ["entities/*"],
-      "@routes/*": ["routes/*"]
-    }
+      "@entities/*": ["libs/entities/*"],
+      "@constants/*": ["libs/constants/*"],
+      "@configs/*": ["libs/configs/*"],
+      "@routes/*": ["libs/routes/*"]
+    },
   },
-  "exclude": ["build/*"],
-  "include": ["index.ts", "libs/**/*"]
+  "exclude": [
+    "build/*",
+  ],
+  "include": [
+    "index.ts",
+    "libs/**/*",
+  ]
 }

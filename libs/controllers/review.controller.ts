@@ -1,7 +1,7 @@
 import { Request } from "express";
 import handler from "./handler.factory";
-import { ReviewModel } from "../routes/review/review.model";
 import multer from "multer";
+import { Review } from "entities/review.entity";
 
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -32,7 +32,7 @@ const createReview = async (req: any, res: any, next: any) => {
   try {
     if (!req.body.product) req.body.product = req.body.id;
     if (!req.body.reviewer) req.body.reviewer = req.user._id;
-    const review = await ReviewModel.create(req.body);
+    const review = await Review.create(req.body);
     res.status(201).json({ data: { review, totalCount: 1 }, status: 201 });
   } catch (error: any) {
     res.status(400).json({ data: error.message, status: 400 });
@@ -59,7 +59,7 @@ const getReview = async (req: Request, res: any, next: any) => {
   }
 };
 
-const deleteReview = handler.deleteOne(ReviewModel);
+const deleteReview = handler.deleteOne(Review);
 
 // const deleteReview = async (req: Request, res, next) => {
 //   try {

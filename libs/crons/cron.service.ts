@@ -4,7 +4,7 @@ import productService from "../routes/product/product.service";
 
 const productsCron = () => {
   const productsCronjob = nodeCron.schedule("10 * * * * *", async () => {
-    // await productService.getDummyProducts();
+    await productService.getDummyProducts();
     productsCronjob.start();
   });
 };

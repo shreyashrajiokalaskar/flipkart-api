@@ -7,6 +7,7 @@ import Router from "./routes/routes";
 import { serve, setup } from "swagger-ui-express";
 import DOT_ENV from "../config.env";
 import { connectionManager } from "./configs/db-connection.config";
+import { cronService } from "crons/cron.service";
 // import swaggerSpec from "libs/swagger";
 
 const app = express();
@@ -49,6 +50,7 @@ const port = DOT_ENV.PORT || 3000;
 app.listen(port,async  () => {
   console.log(`➡ Listening at http://localhost:${port}/api`);
   await connectionManager.fetchDbConnection();
+  // await cronService.productsCron();
 });
 
   /**

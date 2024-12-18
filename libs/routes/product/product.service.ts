@@ -7,7 +7,7 @@ import { Product } from "../../entities/product.entity";
 const getDummyProducts = async () => {
   try {
     const products = await axios.get(
-      "https://dummyjson.com/products?skip=30&limit=100",
+      "https://dummyjson.com/products?skip=130&limit=100",
       {
         headers: { Accept: "application/json", "Accept-Encoding": "identity" },
       }
@@ -20,8 +20,8 @@ const getDummyProducts = async () => {
       product.categoryId = category?.id;
       delete product.thumbnail;
       delete product.images;
-      // const productCreated = (await setDummyProducts(product)) as any;
-      // return productCreated;
+      const productCreated = (await setDummyProducts(product)) as any;
+      return productCreated;
     });
   } catch (error: any) {
     throw new Error(error);
@@ -30,7 +30,7 @@ const getDummyProducts = async () => {
 
 const setDummyProducts = async (product: any) => {
   try {
-    return await Product.create(product);
+    return await Product.create(product).save();
   } catch (error: any) {
     throw new Error(error);
   }

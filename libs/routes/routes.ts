@@ -4,6 +4,7 @@ import authRouter from "./auth/auth.router";
 import productRouters from "./product/product.router";
 import orderRouter from "./order/order.router";
 import ReviewRouter from "./review/review.router";
+import categoryRouter from "./category/category.router";
 
 class Router {
   static routes: IRoutes = {
@@ -27,6 +28,10 @@ class Router {
       {
         path: "review",
         router: ReviewRouter,
+      },
+      {
+        path: "categories",
+        router: categoryRouter,
       },
     ],
   };

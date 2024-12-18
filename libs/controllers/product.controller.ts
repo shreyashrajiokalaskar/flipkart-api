@@ -2,15 +2,18 @@ import { Request, Response } from "express";
 import productService from "../routes/product/product.service";
 import { redisConnection } from "../configs/redis-connection.config";
 import { Product } from "../entities/product.entity";
+import { connectionManager } from "configs/db-connection.config";
 
 const getProducts = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (id) req.query["id"] = id;
-    const products = await productService.getProducts(req.query);
-    const cleanedProducts = [...JSON.parse(JSON.stringify(products))];
+    // const products = await productService.getProducts(req.query);
+    const products = await connectionManager.getRepo(Product).find({
+      relations: ['category'],
+    });
     res.status(200).json({
-      data: { products: cleanedProducts, totalCount: products.length },
+      data: { products, totalCount: products.length },
       status: 200,
     });
   } catch (error: any) {

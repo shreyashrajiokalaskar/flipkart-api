@@ -15,7 +15,6 @@ const createUser = async (userDto: IUser) => {
       delete userDto.role;
     }
     const userData = { ...userDto, roleId: role?.id };
-    console.log("USER", userData)
     let user = await User.create(userData as any).save();
     delete (user as any).password;
     return user;

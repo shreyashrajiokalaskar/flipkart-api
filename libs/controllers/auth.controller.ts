@@ -14,29 +14,29 @@ const signUp = controllerHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = await authService.signUp(req.body);
     const { token } = user;
-    const cookieOptions = {
-      expires: new Date(
-        Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
-      ),
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-    };
-    res.cookie("token", token, cookieOptions);
+    // const cookieOptions = {
+    //   expires: new Date(
+    //     Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
+    //   ),
+    //   secure: process.env.NODE_ENV === "production",
+    //   httpOnly: true,
+    // };
+    // res.cookie("token", token, cookieOptions);
     res.status(201).json({ data: user, status: 201 });
   }
 );
 
 const login = controllerHandler(async (req: any, res: Response) => {
   const user = await authService.login(req.body);
-  const { token } = user;
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
-    ),
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-  };
-  res.cookie("token", token, cookieOptions);
+  // const { token } = user;
+  // const cookieOptions = {
+  //   expires: new Date(
+  //     Date.now() + (process.env.COOKIE_EXPIRY as any) * 24 * 60 * 60 * 1000
+  //   ),
+  //   secure: process.env.NODE_ENV === "production",
+  //   httpOnly: true,
+  // };
+  // res.cookie("token", token, cookieOptions);
   res.status(200).json({ data: user, status: 200 });
 });
 

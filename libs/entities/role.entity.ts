@@ -5,7 +5,7 @@ import { CommonEntity } from "./common.entity";
 @Entity("roles")
 export class Role extends CommonEntity{
 
-  @Column({type: 'varchar', nullable: false})
+  @Column({type: 'varchar', nullable: false, unique:true})
   name?:string;
 
   @OneToMany(()=> User, (user)=> user.roleId)

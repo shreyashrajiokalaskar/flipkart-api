@@ -15,8 +15,8 @@ const createUser = async (userDto: IUser) => {
       delete userDto.role;
     }
     const userData = { ...userDto, roleId: role?.id };
-    let user = await User.create(userData as any);
-    user = user.toJSON();
+    console.log("USER", userData)
+    let user = await User.create(userData as any).save();
     delete (user as any).password;
     return user;
   } catch (error: any) {
@@ -61,6 +61,7 @@ const getUser = async (email: string) => {
       where: { email },
       relations: ["role"]
     });
+    console.log("USER------->", user)
     return user;
   } catch (error: any) {
     const errorModified = {

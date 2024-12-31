@@ -23,6 +23,12 @@ export class Product extends CommonEntity {
   @Column({type: 'float', nullable:false})
   discountPercentage?:number;
 
+  @Column({type: 'float', nullable:true})
+  rating?:number;
+
+  @Column({type: 'text', nullable:true})
+  brand?:string;
+
   @Column({type: 'numeric', nullable:false, default: 1})
   minOrderQuantity?:number;
 

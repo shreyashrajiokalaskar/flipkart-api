@@ -30,7 +30,7 @@ class Router {
         router: ReviewRouter,
       },
       {
-        path: "categories",
+        path: "category",
         router: categoryRouter,
       },
     ],

@@ -1,10 +1,15 @@
+export interface ICustomError {
+  message?: string;
+  statusCode?: number;
+}
+
 class CommonError extends Error {
   isOperational: boolean;
   status: string;
   statusCode: number;
 
-  constructor(error: any) {
-    error.message = error?.message ?? 'Error'; 
+  constructor(error: ICustomError) {
+    error.message = error?.message ?? "Error";
     super(error.message);
     this.statusCode = error.statusCode ?? 500;
     this.status = this.statusCode.toString().startsWith("4") ? "Fail" : "ERROR";

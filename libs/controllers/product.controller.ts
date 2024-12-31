@@ -37,20 +37,20 @@ const getProductById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     let products;
-    const productFromCache = await redisConnection.redis.get(`product:${id}`);
-    if (productFromCache) {
-      console.log("FETCHING FROM REDIS");
-      products = JSON.parse(productFromCache);
+    // const productFromCache = await redisConnection.redis.get(`product:${id}`);
+    if (false) {
+      // console.log("FETCHING FROM REDIS");
+      // products = JSON.parse(productFromCache);
     } else {
-      products = await Product.findOne({
+      products = await connectionManager.getRepo(Product).findOne({
         where: {id},
         relations: ["category"]
       });
       products = {...products};
-      redisConnection.redis.set(
-        `product:${id}`,
-        JSON.stringify(products)
-      );
+      // redisConnection.redis.set(
+      //   `product:${id}`,
+      //   JSON.stringify(products)
+      // );
       console.log("FETCHING FROM DB");
     }
     if (products) {

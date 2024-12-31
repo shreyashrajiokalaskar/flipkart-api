@@ -60,7 +60,6 @@ const getUser = async (email: string) => {
       where: { email },
       relations: ["role"]
     });
-    console.log("USER------->", user)
     return user;
   } catch (error: any) {
     const errorModified = {

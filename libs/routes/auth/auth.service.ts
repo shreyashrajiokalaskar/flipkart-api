@@ -16,7 +16,7 @@ const login = async (loginDto: Partial<IUser>) => {
     const token = await signToken(loginDetails);
     return { ...loginDetails, token };
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new CommonError(error);
   }
 };
 

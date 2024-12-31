@@ -5,5 +5,7 @@ import { Router } from "express";
 const categoryRouter = Router();
 // Making this API open for all
 categoryRouter.get("", CategoryController.getCategories);
+categoryRouter.get("/:id", CategoryController.getProductsByCategory);
+
 
 export default categoryRouter;

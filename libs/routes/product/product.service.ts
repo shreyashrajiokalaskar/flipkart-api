@@ -7,7 +7,7 @@ import { Product } from "../../entities/product.entity";
 const getDummyProducts = async () => {
   try {
     const products = await axios.get(
-      "https://dummyjson.com/products?skip=130&limit=100",
+      "https://dummyjson.com/products?skip=0&limit=300",
       {
         headers: { Accept: "application/json", "Accept-Encoding": "identity" },
       }

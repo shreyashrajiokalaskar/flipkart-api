@@ -8,7 +8,8 @@ import { controllerHandler } from "../utils/common-handler";
 import csv from "csv-parser";
 import { User } from "../entities/user.entity";
 import { City } from "../entities/city.entity";
-const { v4: uuidv4 } = require("uuid");
+import { connectionManager } from "configs/db-connection.config";
+import { IPincode } from "interfaces/common.interface";
 
 const signUp = controllerHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -61,7 +62,7 @@ const resetPassword = controllerHandler(
       .update(req.params.token)
       .digest("hex");
 
-    const user = (await User.findOne({where:{email: ''}})) as any;
+    const user = (await User.findOne({ where: { email: "" } })) as any;
 
     if (!user) {
       res.status(400).json({ data: `Token is invalid`, status: 400 });
@@ -110,27 +111,16 @@ const forgotPassword = async (req: Request, res: Response, next: any) => {
 };
 
 const seedPincodes = async (req: Request, res: Response, next: any) => {
-  const { limit, pageNo } = req.body;
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
-  }
-  const filePath = `/home/tech-alchemy/Documents/self/flipkart-api/${req.file.path}`;
-  const results: {
-    id: string;
-    pincode: number;
-    name: string;
-    district: string;
-    state: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }[] = [];
-  const startIndex = (pageNo - 1) * limit;
-  const endIndex = pageNo * limit;
-  console.log("STARTED");
+  const filePath = `${process.cwd()}/libs/uploads/pincodes.csv`;
+  const batchSize = 5000;
+  const pincodes: IPincode[] = [];
+  let nonDelivery = 0;
+
   fs.createReadStream(filePath)
     .pipe(csv())
     .on("data", async (data: any) => {
       if (data.Delivery === "Non Delivery") {
+        nonDelivery++;
         return;
       }
       // Validate data
@@ -139,39 +129,27 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
         console.error(`Invalid pincode: ${data.Pincode}`);
         return;
       }
-      console.log("PUSHING");
-      results.push({
-        id: uuidv4(),
+
+      pincodes.push({
         pincode: pincode,
         name: data["Office Name"],
         state: data.StateName,
         district: data.District,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
+
+      if (pincodes.length === batchSize) {
+        await processBatch([...pincodes]);
+        pincodes.length = 0;
+      }
     })
     .on("end", async () => {
       try {
-        const paginatedResults = results.slice(startIndex, endIndex);
-        paginatedResults.forEach(async (city) => {
-          try {
-            const { id, pincode, name, state, district, createdAt, updatedAt } =
-              city;
-            await City.create({
-              id,
-              pincode,
-              name,
-              state,
-              district,
-              createdAt,
-              updatedAt,
-            });
-          } catch (error) {
-            console.log("ERROR", error, city);
-          }
-        });
-        fs.unlinkSync(filePath); // Delete the uploaded CSV file after processing
-        res.send("Data has been successfully inserted into the database.");
+        if (pincodes.length > 0) {
+          await processBatch([...pincodes]);
+        }
+        res.send(
+          "Data has been successfully inserted into the database." + nonDelivery
+        );
       } catch (error: any) {
         res
           .status(500)
@@ -181,6 +159,21 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
     .on("error", (err: any) => {
       res.status(500).send(`Error processing CSV file: ${err.message}`);
     });
+};
+
+const processBatch = async (pincodes: IPincode[]) => {
+  if (pincodes.length === 0) return;
+  const queryRunner = connectionManager.connection?.createQueryRunner();
+  await queryRunner?.startTransaction();
+  console.log("CREATED QUERY RUNNER");
+  try {
+    console.log("INSETING USING QUERY RUNNER");
+    await queryRunner?.manager.getRepository(City).insert(pincodes);
+    await queryRunner?.commitTransaction();
+  } catch (error) {
+    console.error("Error inserting batch:", pincodes);
+    await queryRunner?.rollbackTransaction();
+  }
 };
 
 const AuthController = {

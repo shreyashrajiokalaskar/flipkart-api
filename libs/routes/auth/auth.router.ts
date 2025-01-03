@@ -1,8 +1,5 @@
 import { Router } from "express";
 import AuthController from "../../controllers/auth.controller";
-import authService from "./auth.service";
-import multer from "multer";
-const upload = multer({ dest: "libs/uploads/" });
 const authRouter = Router();
 
 /**
@@ -80,7 +77,6 @@ authRouter.patch("/change-password", AuthController.changePassword);
  */
 authRouter.post(
   "/seed-pincodes",
-  upload.single("file"),
   AuthController.seedPincodes
 );
 

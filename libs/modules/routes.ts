@@ -5,6 +5,7 @@ import productRouters from "./product/product.router";
 import orderRouter from "./order/order.router";
 import ReviewRouter from "./review/review.router";
 import categoryRouter from "./category/category.router";
+import commonRouter from "./common/common.router";
 
 class Router {
   static routes: IRoutes = {
@@ -32,6 +33,10 @@ class Router {
       {
         path: "category",
         router: categoryRouter,
+      },
+      {
+        path: "common",
+        router: commonRouter,
       },
     ],
   };

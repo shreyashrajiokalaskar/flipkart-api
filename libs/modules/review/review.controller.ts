@@ -1,5 +1,5 @@
 import { Request } from "express";
-import handler from "./handler.factory";
+import handler from "../../controllers/handler.factory";
 import multer from "multer";
 import { Review } from "entities/review.entity";
 

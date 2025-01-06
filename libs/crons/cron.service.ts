@@ -1,6 +1,6 @@
 // const nodeCron = require('node-cron');
+import productService from "modules/product/product.service";
 import * as nodeCron from "node-cron";
-import productService from "../routes/product/product.service";
 
 const productsCron = () => {
   const productsCronjob = nodeCron.schedule("10 * * * * *", async () => {

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import ProductController from "../../controllers/product.controller";
-import reviewController from "../../controllers/review.controller";
+import reviewController from "../review/review.controller";
 import authService from "../auth/auth.service";
 import ReviewRouter from "../review/review.router";
+import ProductController from "./product.controller";
 
 // const getProducts = async (req:any, res:any, next:any) => {};
 const productRouter = Router();

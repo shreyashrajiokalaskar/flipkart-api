@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import productService from "../routes/product/product.service";
-import { redisConnection } from "../configs/redis-connection.config";
-import { Product } from "../entities/product.entity";
 import { connectionManager } from "configs/db-connection.config";
+import { Product } from "entities/product.entity";
+import productService from "./product.service";
 
 const getProducts = async (req: Request, res: Response) => {
   try {

@@ -1,4 +1,4 @@
-import { CategoryModel } from './category.model';
+import { Category } from "entities/category.entity";
 
 export const setCategories = async () => {
   const categories = [
@@ -17,7 +17,7 @@ export const setCategories = async () => {
     'womens-jewellery',
     'tops',
   ];
-  categories.forEach(async (category: any) => {
-    await CategoryModel.create({ name: category });
-  });
+  await Promise.all(
+    categories.map((category) => Category.create({ name: category }))
+  );
 };

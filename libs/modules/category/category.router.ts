@@ -1,5 +1,5 @@
-import CategoryController from "controllers/category.controller";
 import { Router } from "express";
+import CategoryController from "./category.controller";
 
 // const getProducts = async (req:any, res:any, next:any) => {};
 const categoryRouter = Router();

@@ -23,16 +23,15 @@
     ],
     "paths": {
       "@entities/*": ["libs/entities/*"],
+      "@entities": ["libs/entities"],
       "@constants/*": ["libs/constants/*"],
+      "@constants": ["libs/constants"],
       "@configs/*": ["libs/configs/*"],
-      "@routes/*": ["libs/routes/*"]
-    },
+      "@configs": ["libs/configs"],
+      "@modules/*": ["libs/modules/*"],
+      "@modules": ["libs/modules"]
+    }
   },
-  "exclude": [
-    "build/*",
-  ],
-  "include": [
-    "index.ts",
-    "libs/**/*",
-  ]
+  "exclude": ["build/*"],
+  "include": ["index.ts", "libs/**/*"]
 }

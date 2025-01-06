@@ -1,16 +1,16 @@
-import authService from "../routes/auth/auth.service";
+import authService from "./auth.service";
 import { NextFunction, Request, Response } from "express";
-import userService from "../routes/user/user.service";
+import userService from "../user/user.service";
 import * as crypto from "crypto";
-import bcryptModifiers from "../utils/bcrypt.util";
+import bcryptModifiers from "../../utils/bcrypt.util";
 import fs from "fs";
-import { controllerHandler } from "../utils/common-handler";
+import { controllerHandler } from "../../utils/common-handler";
 import csv from "csv-parser";
-import { User } from "../entities/user.entity";
-import { City } from "../entities/city.entity";
+import { User } from "../../entities/user.entity";
+import { City } from "../../entities/city.entity";
 import { connectionManager } from "configs/db-connection.config";
 import { IPincode } from "interfaces/common.interface";
-import DOT_ENV from "../../config.env";
+import DOT_ENV from "../../../config.env";
 
 const signUp = controllerHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -29,6 +29,7 @@ const signUp = controllerHandler(
 );
 
 const login = controllerHandler(async (req: any, res: Response) => {
+  console.log("IN CONTROLLER")
   const user = await authService.login(req.body);
   // const { token } = user;
   // const cookieOptions = {

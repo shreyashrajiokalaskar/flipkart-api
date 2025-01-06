@@ -3,11 +3,11 @@ import helmet from "helmet";
 import path from "path";
 import cors from "cors";
 import CommonError from "./utils/error.common";
-import Router from "./routes/routes";
 import { serve, setup } from "swagger-ui-express";
 import DOT_ENV from "../config.env";
 import { connectionManager } from "./configs/db-connection.config";
 import { cronService } from "crons/cron.service";
+import Router from "modules/routes";
 // import swaggerSpec from "libs/swagger";
 
 const app = express();

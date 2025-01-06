@@ -12,5 +12,6 @@ const DOT_ENV = {
   env: process.env.NODE_ENV,
   redisHost: process.env.REDIS_HOST,
   redisPort: process.env.REDIS_PORT,
+  batchSize: process.env.BATCH_SIZE ?? 5000
 };
 export default DOT_ENV;

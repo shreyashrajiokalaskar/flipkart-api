@@ -10,6 +10,7 @@ import { User } from "../entities/user.entity";
 import { City } from "../entities/city.entity";
 import { connectionManager } from "configs/db-connection.config";
 import { IPincode } from "interfaces/common.interface";
+import DOT_ENV from "../../config.env";
 
 const signUp = controllerHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -112,18 +113,18 @@ const forgotPassword = async (req: Request, res: Response, next: any) => {
 
 const seedPincodes = async (req: Request, res: Response, next: any) => {
   const filePath = `${process.cwd()}/libs/uploads/pincodes.csv`;
-  const batchSize = 5000;
+  const batchSize = DOT_ENV.batchSize; // Adjusted for better performance
   const pincodes: IPincode[] = [];
   let nonDelivery = 0;
+  const batchPromises: Promise<void>[] = [];
 
   fs.createReadStream(filePath)
     .pipe(csv())
-    .on("data", async (data: any) => {
+    .on("data", (data: any) => {
       if (data.Delivery === "Non Delivery") {
         nonDelivery++;
         return;
       }
-      // Validate data
       const pincode = Number(data.Pincode);
       if (isNaN(pincode)) {
         console.error(`Invalid pincode: ${data.Pincode}`);
@@ -138,17 +139,35 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
       });
 
       if (pincodes.length === batchSize) {
-        await processBatch([...pincodes]);
+        batchPromises.push(
+          processBatch([...pincodes]).catch((err) => {
+            console.error("Batch failed:", err);
+          })
+        );
         pincodes.length = 0;
       }
     })
     .on("end", async () => {
       try {
         if (pincodes.length > 0) {
-          await processBatch([...pincodes]);
+          batchPromises.push(
+            processBatch([...pincodes]).catch((err) => {
+              console.error("Batch failed:", err);
+            })
+          );
         }
+        // Process promises sequentially
+        for (const batchPromise of batchPromises) {
+          try {
+            await batchPromise;
+          } catch (err) {
+            console.error("Batch failed:", err);
+          }
+        }
+        
+
         res.send(
-          "Data has been successfully inserted into the database." + nonDelivery
+          `Data has been successfully inserted into the database. Non-Delivery: ${nonDelivery}`
         );
       } catch (error: any) {
         res
@@ -161,20 +180,23 @@ const seedPincodes = async (req: Request, res: Response, next: any) => {
     });
 };
 
+
 const processBatch = async (pincodes: IPincode[]) => {
   if (pincodes.length === 0) return;
   const queryRunner = connectionManager.connection?.createQueryRunner();
   await queryRunner?.startTransaction();
-  console.log("CREATED QUERY RUNNER");
   try {
-    console.log("INSETING USING QUERY RUNNER");
     await queryRunner?.manager.getRepository(City).insert(pincodes);
     await queryRunner?.commitTransaction();
   } catch (error) {
-    console.error("Error inserting batch:", pincodes);
+    console.error("Error inserting batch: ROLLING BACK", pincodes);
     await queryRunner?.rollbackTransaction();
+    throw error; // Propagate the error
+  } finally {
+    await queryRunner?.release();
   }
 };
+
 
 const AuthController = {
   signUp,

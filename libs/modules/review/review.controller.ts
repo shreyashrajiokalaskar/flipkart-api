@@ -2,6 +2,7 @@ import { Request } from "express";
 import handler from "../../controllers/handler.factory";
 import multer from "multer";
 import { Review } from "entities/review.entity";
+import { controllerHandler } from "utils/common-handler";
 
 export class ReviewController{
   
@@ -30,7 +31,7 @@ export class ReviewController{
   
   public static uploadUserPhoto = this.upload.single("photo");
   
-  public static createReview = async (req: any, res: any, next: any) => {
+  public static createReview = controllerHandler(async (req: any, res: any, next: any) => {
     try {
       if (!req.body.product) req.body.product = req.body.id;
       if (!req.body.reviewer) req.body.reviewer = req.user._id;
@@ -39,9 +40,9 @@ export class ReviewController{
     } catch (error: any) {
       res.status(400).json({ data: error.message, status: 400 });
     }
-  };
+  });
   
-  public static getReview = async (req: Request, res: any, next: any) => {
+  public static getReview = controllerHandler(async (req: Request, res: any, next: any) => {
     try {
       let filter = {};
       if (req.params.id)
@@ -59,7 +60,7 @@ export class ReviewController{
     } catch (error: any) {
       res.status(400).json({ data: error.message, status: 400 });
     }
-  };
+  });
   
   public static deleteReview = handler.deleteOne(Review);
   

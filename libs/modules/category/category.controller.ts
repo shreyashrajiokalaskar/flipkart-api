@@ -2,11 +2,12 @@ import { connectionManager } from "configs/db-connection.config";
 import { Category } from "entities/category.entity";
 import { Product } from "entities/product.entity";
 import { Request, Response } from "express";
+import { controllerHandler } from "utils/common-handler";
 import CommonError, { ICustomError } from "utils/error.common";
 
 export class CategoryController {
   
-  public static getCategories = async (req: Request, res: Response) => {
+  public static getCategories = controllerHandler(async (req: Request, res: Response) => {
     try {
       const categories = await connectionManager.getRepo(Category).find();
       if (!categories.length) {
@@ -23,9 +24,9 @@ export class CategoryController {
     } catch (error) {
       throw new CommonError(error as ICustomError);
     }
-  };
+  });
   
-  public static getProductsByCategory = async (req: Request, res: Response) => {
+  public static getProductsByCategory = controllerHandler(async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const products = await connectionManager.getRepo(Product).find({
@@ -47,5 +48,5 @@ export class CategoryController {
     } catch (error) {
       throw new CommonError(error as ICustomError);
     }
-  };
+  });
 }

@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
 import { connectionManager } from "configs/db-connection.config";
 import { Product } from "entities/product.entity";
-import productService from "./product.service";
+import { controllerHandler } from "utils/common-handler";
+import { ProductService } from "./product.service";
 
 export class ProductController{
   
-  public static getProducts = async (req: Request, res: Response) => {
+  public static getProducts = controllerHandler(async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       if (id) req.query["id"] = id;
-      // const products = await productService.getProducts(req.query);
+      // const products = await ProductService.getProducts(req.query);
       const products = await connectionManager.getRepo(Product).find({
         relations: ['category'],
       });
@@ -20,21 +21,21 @@ export class ProductController{
     } catch (error: any) {
       throw new Error(error);
     }
-  };
+  });
   
-  public static getStats = async (req: Request, res: Response) => {
+  public static getStats = controllerHandler(async (req: Request, res: Response) => {
     try {
-      const stats = await productService.getProductStats();
+      const stats = await ProductService.getProductStats();
       res.status(200).json({ data: { stats }, status: 200 });
     } catch (error: any) {
       throw new Error(error);
     }
-  };
+  });
   
   // const getProductById = handler.getOne(ProductModel, {
   //   path: 'reviews',
   // });
-  public static getProductById = async (req: Request, res: Response) => {
+  public static getProductById = controllerHandler(async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       let products;
@@ -60,7 +61,7 @@ export class ProductController{
     } catch (error: any) {
       throw new Error(error);
     }
-  };
+  });
   
   // const getProductReviews = async (req:any, res:any, next:any) => {
   //   try {

@@ -4,9 +4,10 @@ import fs from "fs";
 import csv from "csv-parser";
 import { CommonService } from "./common.service";
 import { Request, Response } from "express";
+import { controllerHandler } from "utils/common-handler";
 
 export class CommonController {
-  public static seedPincodes = async (req: Request, res: Response) => {
+  public static seedPincodes = controllerHandler(async (req: Request, res: Response) => {
     const filePath = `${process.cwd()}/libs/uploads/pincodes.csv`;
     const batchSize = DOT_ENV.batchSize; // Adjusted for better performance
     const pincodes: IPincode[] = [];
@@ -72,5 +73,5 @@ export class CommonController {
       .on("error", (err: any) => {
         res.status(500).send(`Error processing CSV file: ${err.message}`);
       });
-  };
+  });
 }

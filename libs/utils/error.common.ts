@@ -1,3 +1,5 @@
+import { Response } from "express";
+
 export interface ICustomError {
   message?: string;
   statusCode?: number;
@@ -51,4 +53,16 @@ export const handleDuplicateFieldError = (error: any) => {
   const message = `Duplicate Field Value`;
   error.message = message;
   return new CommonError(error);
+};
+
+export const errorResponse = (
+  res: Response,
+  status: number,
+  message: string
+) => {
+  res.status(status).json({
+    message,
+    error: true,
+    status
+  });
 };

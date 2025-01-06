@@ -6,4 +6,7 @@ const commonRouter = Router();
 // Making this API open for all
 commonRouter.post("/seed-pincodes", CommonController.seedPincodes);
 
+commonRouter.get("/pincodes/:pincode", CommonController.findPincode);
+
+
 export default commonRouter;

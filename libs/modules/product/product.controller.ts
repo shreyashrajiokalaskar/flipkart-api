@@ -3,40 +3,35 @@ import { connectionManager } from "configs/db-connection.config";
 import { Product } from "entities/product.entity";
 import { controllerHandler } from "utils/common-handler";
 import { ProductService } from "./product.service";
+import { successResponse } from "utils/success.response";
+import { errorResponse } from "utils/error.common";
 
-export class ProductController{
-  
-  public static getProducts = controllerHandler(async (req: Request, res: Response) => {
-    try {
+export class ProductController {
+  public static getProducts = controllerHandler(
+    async (req: Request, res: Response) => {
       const { id } = req.params;
       if (id) req.query["id"] = id;
       // const products = await ProductService.getProducts(req.query);
       const products = await connectionManager.getRepo(Product).find({
-        relations: ['category'],
+        relations: ["category"],
       });
-      res.status(200).json({
-        data: { products, totalCount: products.length },
-        status: 200,
-      });
-    } catch (error: any) {
-      throw new Error(error);
+      successResponse(res, 200, products, products.length);
     }
-  });
-  
-  public static getStats = controllerHandler(async (req: Request, res: Response) => {
-    try {
+  );
+
+  public static getStats = controllerHandler(
+    async (req: Request, res: Response) => {
       const stats = await ProductService.getProductStats();
       res.status(200).json({ data: { stats }, status: 200 });
-    } catch (error: any) {
-      throw new Error(error);
+      successResponse(res, 200, stats, 1);
     }
-  });
-  
+  );
+
   // const getProductById = handler.getOne(ProductModel, {
   //   path: 'reviews',
   // });
-  public static getProductById = controllerHandler(async (req: Request, res: Response) => {
-    try {
+  public static getProductById = controllerHandler(
+    async (req: Request, res: Response) => {
       const { id } = req.params;
       let products;
       // const productFromCache = await redisConnection.redis.get(`product:${id}`);
@@ -45,10 +40,10 @@ export class ProductController{
         // products = JSON.parse(productFromCache);
       } else {
         products = await connectionManager.getRepo(Product).findOne({
-          where: {id},
-          relations: ["category"]
+          where: { id },
+          relations: ["category"],
         });
-        products = {...products};
+        products = { ...products };
         // redisConnection.redis.set(
         //   `product:${id}`,
         //   JSON.stringify(products)
@@ -56,13 +51,13 @@ export class ProductController{
         console.log("FETCHING FROM DB");
       }
       if (products) {
-        res.status(200).json({ data: products, status: 200 });
-      } else res.status(404).json({ data: "Product not found!!!", status: 404 });
-    } catch (error: any) {
-      throw new Error(error);
+        successResponse(res, 200, products, 1);
+      } else {
+        return errorResponse(res, 404, "Product not found!!!");
+      }
     }
-  });
-  
+  );
+
   // const getProductReviews = async (req:any, res:any, next:any) => {
   //   try {
   //     const reviews = await reviewController.createReview();
@@ -70,6 +65,4 @@ export class ProductController{
   //     throw new Error(error);
   //   }
   // };
-  
-
 }

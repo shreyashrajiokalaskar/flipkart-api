@@ -1,11 +1,12 @@
 import { CommonEntity } from "./common.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Address } from "./address.entity";
 
 @Entity("cities")
 export class City extends CommonEntity {
 
   @Column({type: 'integer', nullable: false})
+  @Index()
   pincode?:number;
 
   @Column({type: 'varchar', nullable: false})

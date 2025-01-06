@@ -1,5 +1,5 @@
 import { Router } from "express";
-import AuthController from "./auth.controller";
+import { AuthController } from "./auth.controller";
 const authRouter = Router();
 
 /**
@@ -75,9 +75,5 @@ authRouter.patch("/change-password", AuthController.changePassword);
  *       500:
  *         description: Internal Server Error.
  */
-authRouter.post(
-  "/seed-pincodes",
-  AuthController.seedPincodes
-);
 
 export default { authRouter };

@@ -1,22 +1,22 @@
-import { Router } from 'express';
-import reviewController from './review.controller';
-import authService from '../auth/auth.service';
+import { Router } from "express";
+import { AuthService } from "modules/auth/auth.service";
+import { ReviewController } from "./review.controller";
 
 const ReviewRouter = Router({ mergeParams: true });
 
-ReviewRouter.use(authService.AuthGuard);
+ReviewRouter.use(AuthService.AuthGuard);
 ReviewRouter.post(
-  '',
-  authService.checkRole('USER'),
-  reviewController.createReview
+  "",
+  AuthService.checkRole("USER"),
+  ReviewController.createReview
 );
 
-ReviewRouter.get('', authService.checkRole('USER'), reviewController.getReview);
+ReviewRouter.get("", AuthService.checkRole("USER"), ReviewController.getReview);
 
 ReviewRouter.delete(
-  '/:id',
-  authService.checkRole('ADMIN'),
-  reviewController.deleteReview
+  "/:id",
+  AuthService.checkRole("ADMIN"),
+  ReviewController.deleteReview
 );
 
 export default ReviewRouter;

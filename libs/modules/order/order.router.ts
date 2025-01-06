@@ -1,20 +1,20 @@
 import { Router } from "express";
-import authService from "../auth/auth.service";
-import OrderController from "./order.controller";
 import { createOrder, getProductId } from "./order.validation";
+import { AuthService } from "modules/auth/auth.service";
+import { OrderController } from "./order.controller";
 const orderRouter = Router();
 
 orderRouter.post(
   "",
-  authService.AuthGuard,
+  AuthService.AuthGuard,
   createOrder,
   OrderController.createOrder
 );
 
-orderRouter.get("", authService.AuthGuard, OrderController.getOrder);
+orderRouter.get("", AuthService.AuthGuard, OrderController.getOrder);
 orderRouter.get(
   "/:id",
-  authService.AuthGuard,
+  AuthService.AuthGuard,
   getProductId,
   OrderController.getOrder
 );

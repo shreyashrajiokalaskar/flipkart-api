@@ -25,6 +25,9 @@ export class User extends CommonEntity {
   @Column({type: 'uuid', nullable:false})
   roleId?:string;
 
+  @Column({ type: 'bigint', nullable: true, unique: true })
+  phone?:number;
+
   @ManyToOne(()=> Role, (role:Role) => role.users)
   @JoinColumn({name: 'roleId'})
   role?:Role;

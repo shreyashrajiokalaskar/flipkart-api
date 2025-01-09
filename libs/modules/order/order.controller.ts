@@ -1,15 +1,13 @@
 import { Order } from "entities/order.entity";
 import { controllerHandler } from "utils/common-handler";
+import { successResponse } from "utils/success.response";
 
 export class OrderController {
   public static createOrder = controllerHandler(async (req: any, res: any, next: any) => {
     try {
       const orderDetails = req.body;
       const order = await Order.create({ ...orderDetails });
-      res.status(201).json({
-        data: { order, totalCount: 1 },
-        status: 201,
-      });
+      successResponse(res, 201, order, 1)
     } catch (error: any) {
       res.status(400).json({ data: error.message, status: 400 });
     }
@@ -27,10 +25,7 @@ export class OrderController {
       // .populate({ path: 'userId', select: '-password' })
       // .populate('products')
       // .exec();
-      res.status(200).json({
-        data: { orders, totalCount: orders.length },
-        status: 200,
-      });
+      successResponse(res, 200, orders, orders.length)
     } catch (error: any) {
       res.status(400).json({ data: error.message, status: 400 });
     }

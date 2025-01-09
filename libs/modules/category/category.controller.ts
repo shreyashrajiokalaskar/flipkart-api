@@ -4,6 +4,7 @@ import { Product } from "entities/product.entity";
 import { Request, Response } from "express";
 import { controllerHandler } from "utils/common-handler";
 import CommonError, { ICustomError } from "utils/error.common";
+import { successResponse } from "utils/success.response";
 
 export class CategoryController {
   
@@ -17,10 +18,8 @@ export class CategoryController {
         };
         throw new CommonError(errorModified);
       }
-      res.status(200).json({
-        data: { categories, totalCount: categories?.length },
-        status: 200,
-      });
+      successResponse(res, 200, categories, categories.length);
+      
     } catch (error) {
       throw new CommonError(error as ICustomError);
     }
@@ -42,9 +41,7 @@ export class CategoryController {
         };
         throw new CommonError(errorModified);
       }
-      res
-        .status(200)
-        .json({ data: products, totalCount: products.length, status: 200 });
+      successResponse(res, 200, products, products.length);
     } catch (error) {
       throw new CommonError(error as ICustomError);
     }

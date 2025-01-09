@@ -3,6 +3,7 @@ import handler from "../../controllers/handler.factory";
 import multer from "multer";
 import { Review } from "entities/review.entity";
 import { controllerHandler } from "utils/common-handler";
+import { successResponse } from "utils/success.response";
 
 export class ReviewController{
   
@@ -36,7 +37,7 @@ export class ReviewController{
       if (!req.body.product) req.body.product = req.body.id;
       if (!req.body.reviewer) req.body.reviewer = req.user._id;
       const review = await Review.create(req.body);
-      res.status(201).json({ data: { review, totalCount: 1 }, status: 201 });
+      successResponse(res, 201, review, 1);
     } catch (error: any) {
       res.status(400).json({ data: error.message, status: 400 });
     }

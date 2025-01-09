@@ -4,11 +4,6 @@ export class Migrations1736403417396 implements MigrationInterface {
     name = 'Migrations1736403417396'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.addColumn('addresses', new TableColumn({
-            name: '',
-            type:"varchar",
-
-        }))
         await queryRunner.query(`ALTER TABLE "addresses" ADD "isDefault" boolean NOT NULL DEFAULT false`);
         await queryRunner.query(`ALTER TABLE "users" ADD "phone" bigint UNIQUE`);
       }

@@ -9,7 +9,7 @@ const joiOptions = {
   },
 };
 
-export const createOrder = celebrate(
+export const createOrderValidation = celebrate(
   {
     [Segments.BODY]: Joi.object({
       products: Joi.array()
@@ -28,7 +28,7 @@ export const createOrder = celebrate(
   joiOptions
 );
 
-export const getProductId = celebrate({
+export const getProductIdValidation = celebrate({
   [Segments.PARAMS]: Joi.object({
     id: Joi.string().uuid().required(),
   }),

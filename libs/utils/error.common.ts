@@ -58,11 +58,13 @@ export const handleDuplicateFieldError = (error: any) => {
 export const errorResponse = (
   res: Response,
   status: number,
-  message: string
+  message: string,
+  errors?: any
 ) => {
   res.status(status).json({
     message,
     error: true,
-    status
+    status,
+    errors,
   });
 };

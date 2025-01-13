@@ -12,6 +12,10 @@ const DOT_ENV = {
   env: process.env.NODE_ENV,
   redisHost: process.env.REDIS_HOST,
   redisPort: process.env.REDIS_PORT,
-  batchSize: process.env.BATCH_SIZE ?? 5000
+  batchSize: process.env.BATCH_SIZE ?? 5000,
+  mailerUsername: process.env.MAILER_USER_NAME,
+  mailerPassword: process.env.MAILER_PASSWORD,
+  mailerHost: process.env.MAILER_HOST,
+  mailerPort: process.env.MAILER_PORT,
 };
 export default DOT_ENV;

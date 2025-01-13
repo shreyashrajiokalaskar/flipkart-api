@@ -1,13 +1,14 @@
-import { Request, Response, Router } from 'express';
+import { Router } from "express";
+import { UserController } from "./user.controller";
+import {
+  getUserByIdValidation,
+  updateUserValidation,
+} from "./user.validations";
 
 const userRouter = Router();
 
-userRouter.get('', (req: Request, res: Response) => {
-  res.status(200).json({ data: 'GET USER!' });
-});
+userRouter.patch("/:id", getUserByIdValidation, updateUserValidation, UserController.updateUserById);
 
-userRouter.post('', (req: Request, res: Response) => {
-  if (req.body) res.status(200).json({ data: 'GET USER!' });
-});
+userRouter.get("/:id", getUserByIdValidation, UserController.getUserById);
 
 export default { userRouter };

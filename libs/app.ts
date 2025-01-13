@@ -2,12 +2,13 @@ import express, { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
 import path from "path";
 import cors from "cors";
-import CommonError from "./utils/error.common";
+import CommonError, { errorResponse } from "./utils/error.common";
 import { serve, setup } from "swagger-ui-express";
 import DOT_ENV from "../config.env";
 import { connectionManager } from "./configs/db-connection.config";
 import { cronService } from "crons/cron.service";
 import Router from "modules/routes";
+import { handleErrorMiddleware } from "middlewares/error.middleware";
 // import swaggerSpec from "libs/swagger";
 
 const app = express();
@@ -76,9 +77,4 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 
 // Error Handling Middleware
-app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  error.status = error.status || "Error";
-  error.statusCode = error.statusCode || 500;
-  const commonError = new CommonError(error);
-  commonError.sendDevError(error, res);
-});
+app.use(handleErrorMiddleware);

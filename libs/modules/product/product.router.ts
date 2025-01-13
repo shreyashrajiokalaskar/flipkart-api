@@ -9,7 +9,7 @@ const productRouter = Router();
 productRouter.use("/:id/reviews", ReviewRouter);
 
 // Making this API open for all
-productRouter.get("", ProductController.getProducts);
+productRouter.get("", AuthService.AuthGuard, ProductController.getProducts);
 
 productRouter.get(
   "/stats",
@@ -17,7 +17,11 @@ productRouter.get(
   AuthService.checkRole("ADMIN"),
   ProductController.getStats
 );
-productRouter.get("/:id", AuthService.AuthGuard, ProductController.getProductById);
+productRouter.get(
+  "/:id",
+  AuthService.AuthGuard,
+  ProductController.getProductById
+);
 
 // productRouter.post(
 //   '/:id/reviews',

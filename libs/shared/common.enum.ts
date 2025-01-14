@@ -35,3 +35,8 @@ export enum ASSET_TYPE {
   PRODUCT = "PRODUCT",
   SELLER = "SELLER"
 }
+
+export enum SORT_DIRECTION {
+  ASC = "ASC",
+  DESC = "DESC"
+}

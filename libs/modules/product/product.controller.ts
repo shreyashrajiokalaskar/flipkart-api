@@ -5,6 +5,7 @@ import { controllerHandler } from "utils/common-handler";
 import { ProductService } from "./product.service";
 import { successResponse } from "utils/success.response";
 import { errorResponse } from "utils/error.common";
+import { ProductFilterDto } from "./product.dto";
 
 export class ProductController {
   public static getProducts = controllerHandler(
@@ -16,6 +17,13 @@ export class ProductController {
         relations: ["category"],
       });
       successResponse(res, 200, "", products, products.length);
+    }
+  );
+
+  public static filterProducts = controllerHandler(
+    async (req: Request, res: Response) => {
+      const body: ProductFilterDto = req.body;
+      successResponse(res, 200, 'Success');
     }
   );
 

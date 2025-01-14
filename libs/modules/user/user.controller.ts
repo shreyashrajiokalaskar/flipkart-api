@@ -15,7 +15,7 @@ export class UserController {
         return errorResponse(res, 404, "User not found!");
       }
       delete user.password;
-      return successResponse(res, 200, user, 1);
+      return successResponse(res, 200, "", user, 1);
     }
   );
 
@@ -26,11 +26,13 @@ export class UserController {
       if (!user) {
         return errorResponse(res, 404, "User not found!");
       }
-      const updatedUser = await connectionManager.getRepo(User).update({ id }, req.body);
-      if(!updatedUser.affected){
+      const updatedUser = await connectionManager
+        .getRepo(User)
+        .update({ id }, req.body);
+      if (!updatedUser.affected) {
         return errorResponse(res, 400, "Bad Request!");
       }
-      return successResponse(res, 204, null, 1);
+      return successResponse(res, 204, "", null, 1);
     }
   );
 }

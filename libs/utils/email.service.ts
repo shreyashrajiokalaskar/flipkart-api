@@ -2,8 +2,7 @@ import { IEmailOptions } from "interfaces/common.interface";
 import nodemailer, { Transporter } from "nodemailer";
 import DOT_ENV from "../../config.env";
 
-
-class Mailer {
+export class EmailService {
   private transporter: Transporter;
 
   constructor() {
@@ -18,22 +17,20 @@ class Mailer {
     });
   }
 
-  public async sendMail(options: IEmailOptions): Promise<void> {
+  async sendEmail(mailOptions: IEmailOptions): Promise<void> {
     try {
-      const info = await this.transporter.sendMail({
-        from: `"Your App" <${process.env.SMTP_USER}>`, // Sender address
-        to: options.to,
-        subject: options.subject,
-        text: options.text,
-        html: options.html,
+      const { to, subject, text, html } = mailOptions;
+      await this.transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        text,
+        html,
       });
-
-      console.log("Email sent: %s", info.messageId);
+      console.log(`Email sent to ${to}`);
     } catch (error) {
-      console.error("Error sending email:", error);
-      throw new Error("Failed to send email.");
+      console.error(`Error sending email to ${mailOptions.to}:`, error);
+      throw new Error("Failed to send email");
     }
   }
 }
-
-export default new Mailer();

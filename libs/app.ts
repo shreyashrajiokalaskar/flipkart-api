@@ -73,7 +73,7 @@ Router.init(app);
 
 // 404 Route
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  next(new CommonError(new Error(`${req.originalUrl} not found!!!`)));
+  next(errorResponse(res, 404, `${req.originalUrl} not found!!!`));
 });
 
 // Error Handling Middleware

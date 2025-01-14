@@ -15,7 +15,7 @@ export class ProductController {
       const products = await connectionManager.getRepo(Product).find({
         relations: ["category"],
       });
-      successResponse(res, 200, products, products.length);
+      successResponse(res, 200, "", products, products.length);
     }
   );
 
@@ -23,7 +23,7 @@ export class ProductController {
     async (req: Request, res: Response) => {
       const stats = await ProductService.getProductStats();
       res.status(200).json({ data: { stats }, status: 200 });
-      successResponse(res, 200, stats, 1);
+      successResponse(res, 200, "", stats, 1);
     }
   );
 
@@ -51,7 +51,7 @@ export class ProductController {
         console.log("FETCHING FROM DB");
       }
       if (products) {
-        successResponse(res, 200, products, 1);
+        successResponse(res, 200, "", products, 1);
       } else {
         return errorResponse(res, 404, "Product not found!!!");
       }

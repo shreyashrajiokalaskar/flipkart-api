@@ -11,7 +11,6 @@ import { errorResponse } from "utils/error.common";
 import { successResponse } from "utils/success.response";
 
 export class CommonController {
-
   public static seedPincodes = controllerHandler(
     async (req: Request, res: Response) => {
       const filePath = `${process.cwd()}/libs/uploads/pincodes.csv`;
@@ -93,10 +92,10 @@ export class CommonController {
         },
       });
 
-      if(!city?.length){
-        return errorResponse(res, 404,'Pincode not found!' )
+      if (!city?.length) {
+        return errorResponse(res, 404, "Pincode not found!");
       }
-      successResponse(res, 200, city, city.length);
+      successResponse(res, 200, "", city, city.length);
     }
   );
 }

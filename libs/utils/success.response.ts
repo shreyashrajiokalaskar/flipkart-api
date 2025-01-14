@@ -2,12 +2,13 @@ import { Response } from "express";
 
 export const successResponse = (
   res: Response,
-  success: any,
+  statusCode?: number,
+  message?: string,
   result?: any,
   count?: number
 ) => {
-  res.status(success.statusCode || 200).json({
-    message: success.message || "Data fetched successfully!",
+  res.status(statusCode || 200).json({
+    message: message || "Data fetched successfully!",
     result: result || {},
     count,
   });

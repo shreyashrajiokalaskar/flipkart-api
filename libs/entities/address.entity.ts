@@ -16,6 +16,9 @@ export class Address extends CommonEntity {
   @Column({type: 'boolean', default: false})
   isDefault?:boolean;
 
+  @Column({type: 'boolean', default: true})
+  isHome?:boolean;
+
   @ManyToOne(()=> User, (user)=> user.addresses)
   user?: User;
 

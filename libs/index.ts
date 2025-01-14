@@ -10,7 +10,7 @@ export * from "./crons/cron.service";
 export * from "./modules/product/product.service";
 export * from "./utils/api-features.util";
 export * from "./utils/error.common";
-export * from "./utils/email.util";
+export * from "./utils/email.service";
 export * from "./controllers/handler.factory";
 
 export * from "./configs/db-connection.config";

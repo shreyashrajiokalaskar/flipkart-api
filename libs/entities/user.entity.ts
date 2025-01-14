@@ -22,6 +22,12 @@ export class User extends CommonEntity {
   @Column({type:'varchar', nullable: false})
   password?:string;
 
+  @Column({type:'varchar', nullable: true})
+  resetToken?:string;
+
+  @Column({type:'bigint', nullable: true})
+  resetTokenExpiry?:number;
+
   @Column({type: 'uuid', nullable:false})
   roleId?:string;
 

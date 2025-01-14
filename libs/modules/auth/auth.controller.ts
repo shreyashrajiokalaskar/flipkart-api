@@ -4,7 +4,11 @@ import bcryptModifiers from "../../utils/bcrypt.util";
 import { controllerHandler } from "../../utils/common-handler";
 import { User } from "../../entities/user.entity";
 import { AuthService } from "./auth.service";
-import { UserService } from "modules/user/user.service";
+import { connectionManager } from "configs/db-connection.config";
+import { generateResetToken } from "utils/common.utils";
+import { EmailService } from "utils/email.service";
+import { successResponse } from "utils/success.response";
+import { errorResponse } from "utils/error.common";
 
 export class AuthController {
   public static signUp = controllerHandler(
@@ -79,40 +83,40 @@ export class AuthController {
     }
   );
 
-  public static forgotPassword = async (
-    req: Request,
-    res: Response,
-    next: any
-  ) => {
-    const user = await UserService.getUser(req.body.email);
-    try {
-      if (!user) {
-        res.status(404).json({ data: "User not found!", status: 404 });
-      }
-      // const resetToken = user.resetPasswordToken();
-      // const resetURL = `${req.protocol}://${req.get(
-      //   "host"
-      // )}/api/auth/reset-password/${resetToken}`;
+  public static forgotPassword = controllerHandler(
+    async (req: Request, res: Response, next: any) => {
+      const { email } = req.body;
+      const user = await connectionManager.getRepo(User).findOne({
+        where: { email},
+      });
+      try {
+        if (!user) {
+        return errorResponse(res, 404, "User not found!");
+        }
+        const { resetToken, resetTokenExpiry } = generateResetToken();
+        console.log(req.protocol, req.get(
+          "host"
+        ))
+        const resetURL = `${req.protocol}://${req.get(
+          "host"
+        )}/reset-password/${resetTokenExpiry}`;
 
-      // const message = `Forgot your password? Reset password at ${resetURL}`;
+        const text = `Forgot your password? Reset password at ${resetURL}`;
+        user.resetToken = resetToken;
+        user.resetTokenExpiry = resetTokenExpiry;
 
-      // await user.save();
-      // await sendEmail({
-      //   email: user.email,
-      //   message,
-      //   subject: "Reset Password Token (Valid for 10 min)",
-      // });
-      res
-        .status(200)
-        .json({ data: `Token sent to ${user?.email}`, status: 200 });
-    } catch (error: any) {
-      // await user.save();
-      res
-        .status(500)
-        .json({
-          data: `Token could not be sent to ${user?.email}`,
-          status: 500,
+        await user.save();
+        const emailService = new EmailService();
+        await emailService.sendEmail({
+          to: user.email ?? "",
+          text,
+          subject: "Reset Password Token (Valid for 10 min)",
         });
+        return successResponse(res, 200, `Token sent to ${user?.email}`);
+      } catch (error: any) {
+        // await user.save();
+        return errorResponse(res, 404, `Token could not be sent to ${user?.email}`);
+      }
     }
-  };
+  );
 }

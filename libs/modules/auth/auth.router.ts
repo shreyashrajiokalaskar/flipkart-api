@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { AuthController } from "./auth.controller";
-import { createUserValidation, loginValidation } from "./auth.validations";
+import {
+  createUserValidation,
+  forgotPasswordValidation,
+  loginValidation,
+} from "./auth.validations";
 const authRouter = Router();
 
 /**
@@ -27,9 +31,14 @@ authRouter.post("/login", loginValidation, AuthController.login);
 
 authRouter.patch("/reset-password/:token", AuthController.resetPassword);
 
-authRouter.post("/forgot-password", AuthController.forgotPassword);
+authRouter.post("/forgot-password",
+  forgotPasswordValidation,
+  AuthController.forgotPassword);
 
 // authRouter.use(authService.AuthGuard);
-authRouter.patch("/change-password", AuthController.changePassword);
+authRouter.patch(
+  "/change-password",
+  AuthController.changePassword
+);
 
 export default { authRouter };

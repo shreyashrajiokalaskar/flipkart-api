@@ -17,3 +17,9 @@ export const loginValidation = celebrate({
         password: Joi.string().required(),
     })
 })
+
+export const forgotPasswordValidation = celebrate({
+    [Segments.BODY] : Joi.object({
+        email: Joi.string().required(),
+    })
+})

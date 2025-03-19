@@ -71,10 +71,10 @@ app.get("/", (req: any, res, next) => {
 
 Router.init(app);
 
-// 404 Route
-app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  next(errorResponse(res, 404, `${req.originalUrl} not found!!!`));
-});
+// // 404 Route
+// app.all("*", (req: Request, res: Response, next: NextFunction) => {
+//   next(errorResponse(res, 404, `${req.originalUrl} not found!!!`));
+// });
 
 // Error Handling Middleware
 app.use(handleErrorMiddleware);

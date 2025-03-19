@@ -23,7 +23,11 @@ export class ProductController {
   public static filterProducts = controllerHandler(
     async (req: Request, res: Response) => {
       const body: ProductFilterDto = req.body;
-      successResponse(res, 200, 'Success');
+      console.log('body', body)
+      const filteredProducts = await ProductService.filterProducts(body);
+      successResponse(res, 200, "Success", filteredProducts, filteredProducts.length);
+      // successResponse(res, 200, "Success");
+
     }
   );
 

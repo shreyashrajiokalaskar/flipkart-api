@@ -46,8 +46,8 @@ const port = DOT_ENV.PORT || 3000;
 //   );
 // });
 app.listen(port, async () => {
-  console.log(`➡ Listening at http://localhost:${port}/api`);
   await connectionManager.fetchDbConnection();
+  console.log(`➡ Listening at http://localhost:${port}/api`);
   // await cronService.productsCron();
 });
 

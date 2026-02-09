@@ -8,6 +8,7 @@ export class ConnectionManager {
     try {
       if (!this.connection) {
         this.connection = await AppDataSource.initialize();
+        console.log('DB Connected Successfully!')
       }
       return this.connection;
     } catch (error) {

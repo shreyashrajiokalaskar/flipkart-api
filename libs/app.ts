@@ -1,14 +1,11 @@
-import express, { Request, Response, NextFunction } from "express";
-import helmet from "helmet";
-import path from "path";
 import cors from "cors";
-import CommonError, { errorResponse } from "./utils/error.common";
-import { serve, setup } from "swagger-ui-express";
+import express from "express";
+import helmet from "helmet";
+import { handleErrorMiddleware } from "middlewares/error.middleware";
+import Router from "modules/routes";
+import path from "path";
 import DOT_ENV from "../config.env";
 import { connectionManager } from "./configs/db-connection.config";
-import { cronService } from "crons/cron.service";
-import Router from "modules/routes";
-import { handleErrorMiddleware } from "middlewares/error.middleware";
 // import swaggerSpec from "libs/swagger";
 
 const app = express();
@@ -48,24 +45,24 @@ const port = DOT_ENV.PORT || 3000;
 //     `➡ Socket Listening at http://localhost:${process.env.SOCKET_PORT}/api`
 //   );
 // });
-app.listen(port,async  () => {
+app.listen(port, async () => {
   console.log(`➡ Listening at http://localhost:${port}/api`);
   await connectionManager.fetchDbConnection();
   // await cronService.productsCron();
 });
 
-  /**
-    * @swagger
-    * /user:
-    *   get:
-    *     summary: Retrieve a list of users
-    *     responses:
-    *       200:
-    *         description: A list of users
-    */
-app.get("/", (req: any, res, next) => {
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: Health Check API for the service
+ *     responses:
+ *       200:
+ *         description: Returns 200 if the service is functioning
+ */
+app.get("/health-check", (req: any, res, next) => {
   res.status(200).json({
-    data: "HEY THERE!!!",
+    data: "Server has started and is working!",
   });
 });
 

@@ -1,10 +1,12 @@
-import { connectionManager } from "configs/db-connection.config";
-import { Category } from "entities/category.entity";
-import { Product } from "entities/product.entity";
+
+import { connectionManager } from "@configs/db-connection.config";
+import { Category } from "@entities/category.entity";
+import { Product } from "@entities/product.entity";
 import { Request, Response } from "express";
-import { controllerHandler } from "utils/common-handler";
-import CommonError, { ICustomError } from "utils/error.common";
-import { successResponse } from "utils/success.response";
+import { controllerHandler } from "libs/utils/common-handler";
+import CommonError, { ICustomError } from "libs/utils/error.common";
+import { successResponse } from "libs/utils/success.response";
+
 
 export class CategoryController {
   public static getCategories = controllerHandler(

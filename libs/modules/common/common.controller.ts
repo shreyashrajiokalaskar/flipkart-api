@@ -1,14 +1,15 @@
-import { IPincode } from "interfaces/common.interface";
-import DOT_ENV from "../../../config.env";
-import fs from "fs";
+import { connectionManager } from "@configs/db-connection.config";
+import { City } from "@entities/city.entity";
 import csv from "csv-parser";
-import { CommonService } from "./common.service";
 import { Request, Response } from "express";
-import { controllerHandler } from "utils/common-handler";
-import { connectionManager } from "configs/db-connection.config";
-import { City } from "entities/city.entity";
-import { errorResponse } from "utils/error.common";
-import { successResponse } from "utils/success.response";
+import fs from "fs";
+import { IPincode } from "libs/interfaces/common.interface";
+import { controllerHandler } from "libs/utils/common-handler";
+import { errorResponse } from "libs/utils/error.common";
+import { successResponse } from "libs/utils/success.response";
+import DOT_ENV from "../../../config.env";
+import { CommonService } from "./common.service";
+
 
 export class CommonController {
   public static seedPincodes = controllerHandler(

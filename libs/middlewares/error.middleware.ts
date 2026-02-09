@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
 import { isCelebrateError } from "celebrate";
-import { errorResponse } from "utils/error.common";
+import { NextFunction, Request, Response } from "express";
+import { errorResponse } from "libs";
 
 export const handleErrorMiddleware = (
   err: any,

@@ -1,8 +1,8 @@
+import { AuthService } from "@modules/auth/auth.service";
 import { Router } from "express";
+import { DtoValidator } from "libs/utils/common-handler";
 import ReviewRouter from "../review/review.router";
-import { AuthService } from "modules/auth/auth.service";
 import { ProductController } from "./product.controller";
-import { DtoValidator } from "utils/common-handler";
 import { ProductFilterDto } from "./product.dto";
 
 // const getProducts = async (req:any, res:any, next:any) => {};

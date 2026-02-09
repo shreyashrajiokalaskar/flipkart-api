@@ -1,9 +1,10 @@
-import { connectionManager } from "configs/db-connection.config";
-import { User } from "entities/user.entity";
 import { Request, Response } from "express";
-import { controllerHandler } from "utils/common-handler";
-import { errorResponse } from "utils/error.common";
-import { successResponse } from "utils/success.response";
+
+import { connectionManager } from "@configs/db-connection.config";
+import { User } from "@entities/user.entity";
+import { controllerHandler } from "libs/utils/common-handler";
+import { errorResponse } from "libs/utils/error.common";
+import { successResponse } from "libs/utils/success.response";
 import { UserService } from "./user.service";
 
 export class UserController {

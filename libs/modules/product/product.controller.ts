@@ -1,11 +1,11 @@
+import { connectionManager } from "@configs/db-connection.config";
+import { Product } from "@entities/product.entity";
 import { Request, Response } from "express";
-import { connectionManager } from "configs/db-connection.config";
-import { Product } from "entities/product.entity";
-import { controllerHandler } from "utils/common-handler";
-import { ProductService } from "./product.service";
-import { successResponse } from "utils/success.response";
-import { errorResponse } from "utils/error.common";
+import { controllerHandler } from "libs/utils/common-handler";
+import { errorResponse } from "libs/utils/error.common";
+import { successResponse } from "libs/utils/success.response";
 import { ProductFilterDto } from "./product.dto";
+import { ProductService } from "./product.service";
 
 export class ProductController {
   public static getProducts = controllerHandler(

@@ -1,13 +1,13 @@
+import { Role } from '@entities/role.entity';
 import { DataSource } from 'typeorm';
 const { v4: uuidv4 } = require("uuid");
-import { Role } from 'entities/role.entity';
 
 export const seedRoles = async (dataSource: DataSource) => {
   console.log('Seeding Roles...');
 
   const userRepository = dataSource.getRepository(Role);
 
-  const roles =  [
+  const roles = [
     {
       id: uuidv4(),
       name: "BUYER",

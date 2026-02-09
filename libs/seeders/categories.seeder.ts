@@ -1,4 +1,4 @@
-import { Category } from 'entities/category.entity';
+import { Category } from '@entities/category.entity';
 import { DataSource } from 'typeorm';
 
 export const seedCategories = async (dataSource: DataSource) => {

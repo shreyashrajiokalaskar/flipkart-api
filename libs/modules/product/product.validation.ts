@@ -1,6 +1,6 @@
 import { celebrate, Segments } from "celebrate";
 import Joi from "joi";
-import { SORT_DIRECTION } from "shared/common.enum";
+import { SORT_DIRECTION } from "libs/shared/common.enum";
 
 export const filterProductsValidation = celebrate({
   [Segments.BODY]: Joi.object({

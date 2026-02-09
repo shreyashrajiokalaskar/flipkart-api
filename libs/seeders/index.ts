@@ -1,7 +1,7 @@
-import { AppDataSource } from 'configs/data-source';
+import AppDataSource from '@configs/data-source';
 import 'reflect-metadata';
-import { seedRoles } from './roles.seeder';
 import { seedCategories } from './categories.seeder';
+import { seedRoles } from './roles.seeder';
 
 const runSeeders = async () => {
   const dataSource = await AppDataSource.initialize();

@@ -1,14 +1,14 @@
-import { NextFunction, Request, Response } from "express";
+import { connectionManager } from "@configs/db-connection.config";
 import * as crypto from "crypto";
+import { NextFunction, Request, Response } from "express";
+import { generateResetToken } from "libs/utils/common.utils";
+import { EmailService } from "libs/utils/email.service";
+import { errorResponse } from "libs/utils/error.common";
+import { successResponse } from "libs/utils/success.response";
+import { User } from "../../entities/user.entity";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import { controllerHandler } from "../../utils/common-handler";
-import { User } from "../../entities/user.entity";
 import { AuthService } from "./auth.service";
-import { connectionManager } from "configs/db-connection.config";
-import { generateResetToken } from "utils/common.utils";
-import { EmailService } from "utils/email.service";
-import { successResponse } from "utils/success.response";
-import { errorResponse } from "utils/error.common";
 
 export class AuthController {
   public static signUp = controllerHandler(
@@ -87,11 +87,11 @@ export class AuthController {
     async (req: Request, res: Response, next: any) => {
       const { email } = req.body;
       const user = await connectionManager.getRepo(User).findOne({
-        where: { email},
+        where: { email },
       });
       try {
         if (!user) {
-        return errorResponse(res, 404, "User not found!");
+          return errorResponse(res, 404, "User not found!");
         }
         const { resetToken, resetTokenExpiry } = generateResetToken();
         console.log(req.protocol, req.get(

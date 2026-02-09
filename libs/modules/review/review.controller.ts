@@ -1,12 +1,12 @@
+import { Review } from "@entities/review.entity";
 import { Request } from "express";
-import handler from "../../controllers/handler.factory";
+import { controllerHandler } from "libs/utils/common-handler";
+import { successResponse } from "libs/utils/success.response";
 import multer from "multer";
-import { Review } from "entities/review.entity";
-import { controllerHandler } from "utils/common-handler";
-import { successResponse } from "utils/success.response";
+import handler from "../../controllers/handler.factory";
 
-export class ReviewController{
-  
+export class ReviewController {
+
   public static multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "apps/flipkart-api/src/assets");
@@ -16,7 +16,7 @@ export class ReviewController{
       cb(null, `user-${Date.now()}.${ext}`);
     },
   });
-  
+
   public static multerFilter = (req: Request, file: any, cb: any) => {
     if (file.mimetype.startsWith("image")) {
       cb(null, true);
@@ -24,14 +24,14 @@ export class ReviewController{
       cb(new Error("File is not image type"));
     }
   };
-  
+
   public static upload = multer({
     storage: this.multerStorage,
     fileFilter: this.multerFilter,
   });
-  
+
   public static uploadUserPhoto = this.upload.single("photo");
-  
+
   public static createReview = controllerHandler(async (req: any, res: any, next: any) => {
     try {
       if (!req.body.product) req.body.product = req.body.id;
@@ -42,7 +42,7 @@ export class ReviewController{
       res.status(400).json({ data: error.message, status: 400 });
     }
   });
-  
+
   public static getReview = controllerHandler(async (req: Request, res: any, next: any) => {
     try {
       let filter = {};
@@ -62,9 +62,9 @@ export class ReviewController{
       res.status(400).json({ data: error.message, status: 400 });
     }
   });
-  
+
   public static deleteReview = handler.deleteOne(Review);
-  
+
   // const deleteReview = async (req: Request, res, next) => {
   //   try {
   //     const review = ReviewCollection.reviewModel.findByIdAndDelete(
@@ -77,6 +77,6 @@ export class ReviewController{
   //     throw new Error(error.message);
   //   }
   // };
-  
+
 
 }

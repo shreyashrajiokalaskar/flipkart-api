@@ -1,26 +1,27 @@
 {
   "compilerOptions": {
-    "strictPropertyInitialization": false,
-    "noEmitOnError": true,
-    "noImplicitAny": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "target": "ES2022",
     "module": "CommonJS",
-    "allowJs": true,
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "Node",
-    "alwaysStrict": true,
+
+    "outDir": "./build",
+    "baseUrl": ".",
+
     "strict": true,
-    "baseUrl": "libs",
-    "outDir": "./build/",
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths"
-      }
-    ],
+    "strictPropertyInitialization": false,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "alwaysStrict": true,
+
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "allowJs": false,
+    "sourceMap": true,
+
     "paths": {
       "@entities/*": ["libs/entities/*"],
       "@entities": ["libs/entities"],
@@ -29,9 +30,10 @@
       "@configs/*": ["libs/configs/*"],
       "@configs": ["libs/configs"],
       "@modules/*": ["libs/modules/*"],
-      "@modules": ["libs/modules"]
+      "@modules": ["libs/modules"],
+      "@middlewares/*": ["libs/middlewares/*"]
     }
   },
-  "exclude": ["build/*"],
-  "include": ["index.ts", "libs/**/*"]
+  "include": ["index.ts", "libs/**/*"],
+  "exclude": ["build", "node_modules"]
 }

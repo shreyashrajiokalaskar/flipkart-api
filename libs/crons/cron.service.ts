@@ -1,5 +1,5 @@
 // const nodeCron = require('node-cron');
-import { ProductService } from "modules/product/product.service";
+import { ProductService } from "@modules/product/product.service";
 import * as nodeCron from "node-cron";
 
 const productsCron = () => {

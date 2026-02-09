@@ -1,4 +1,4 @@
-import { IEmailOptions } from "interfaces/common.interface";
+import { IEmailOptions } from "libs/interfaces/common.interface";
 import nodemailer, { Transporter } from "nodemailer";
 import DOT_ENV from "../../config.env";
 

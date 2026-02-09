@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsEnum, IsNumber, IsObject, IsOptional, IsString, Max, Min, ValidateNested } from "class-validator";
-import { SORT_DIRECTION } from "shared/common.enum";
+import { SORT_DIRECTION } from "libs/shared/common.enum";
 
 export class PriceRangeDto {
   @IsOptional()
@@ -26,29 +26,29 @@ export class SortDto {
 
 export class ProductFilterDto {
 
-    @IsOptional()
-    @IsString()
-    category?:string;
+  @IsOptional()
+  @IsString()
+  category?: string;
 
-    @IsOptional()
-    @IsString()
-    brand?:string;
+  @IsOptional()
+  @IsString()
+  brand?: string;
 
-    @IsOptional()
-    @IsNumber()
-    @Min(1)
-    @Max(5)
-    rating?:string;
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(5)
+  rating?: string;
 
-    @IsOptional()
-    @IsObject()
-    @ValidateNested()
-    @Type(()=> PriceRangeDto)
-    priceRange?: PriceRangeDto;
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PriceRangeDto)
+  priceRange?: PriceRangeDto;
 
-    @IsOptional()
-    @IsObject()
-    @ValidateNested()
-    @Type(()=> SortDto)
-    sort?: SortDto
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => SortDto)
+  sort?: SortDto
 }

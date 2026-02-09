@@ -1,6 +1,7 @@
-import { Order } from "entities/order.entity";
-import { controllerHandler } from "utils/common-handler";
-import { successResponse } from "utils/success.response";
+import { Order } from "@entities/order.entity";
+import { controllerHandler } from "libs/utils/common-handler";
+import { successResponse } from "libs/utils/success.response";
+
 
 export class OrderController {
   public static createOrder = controllerHandler(async (req: any, res: any, next: any) => {

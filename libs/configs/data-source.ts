@@ -1,18 +1,19 @@
+import dotenv from "dotenv";
+import { join } from "path";
 import { DataSource } from "typeorm";
-import DOT_ENV from "../../config.env";
 
-const { database, username, password, host, DB_PORT } = DOT_ENV;
+dotenv.config();
+const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  port: Number(process.env.DB_PORT || 5432),
+  username: process.env.DB_USER || 'cornerstone_user',
+  password: process.env.DB_PASSWORD || 'cornerstone_password',
+  database: process.env.DB_NAME || 'cornerstone_db',
+  entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
+  migrations: [join(__dirname, '..', 'migrations', '*.{ts,js}')],
+  synchronize: false,
+  logging: false,
+});
 
-export const AppDataSource = new DataSource({
-  type: "postgres",
-  host,
-  port: DB_PORT ?? 5432,
-  username,
-  password,
-  database,
-  synchronize:false,
-  logging:true,
-  entities:[...["libs/entities/*.ts"]],
-  migrations: ["libs/migrations/*.ts"],
-  migrationsRun:true
-})
+export default AppDataSource;

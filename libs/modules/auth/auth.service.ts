@@ -1,13 +1,13 @@
-import { IUser } from "../../interfaces/auth.interface";
+import { UserService } from "@modules/user/user.service";
+import { Response } from "express";
 import * as jwt from "jsonwebtoken";
+import { User } from "../../entities/user.entity";
+import { IUser } from "../../interfaces/auth.interface";
 import bcryptModifiers from "../../utils/bcrypt.util";
 import CommonError from "../../utils/error.common";
-import { Response } from "express";
-import { User } from "../../entities/user.entity";
-import { UserService } from "index";
 
-export class AuthService{
-  
+export class AuthService {
+
   // Login existing user
   public static login = async (loginDto: Partial<IUser>) => {
     try {
@@ -21,7 +21,7 @@ export class AuthService{
       throw new CommonError(error);
     }
   };
-  
+
   // Create a new User
   public static signUp = async (userDto: IUser) => {
     try {
@@ -32,7 +32,7 @@ export class AuthService{
       throw new CommonError(error);
     }
   };
-  
+
   // Create access token
   public static signToken = async (userData: any) => {
     const payload = {
@@ -44,7 +44,7 @@ export class AuthService{
       expiresIn: "30m",
     });
   };
-  
+
   public static changePassword = async (userDto: Partial<IUser>) => {
     try {
       const user = await UserService.getUser(userDto.email as string);
@@ -69,7 +69,7 @@ export class AuthService{
       throw new CommonError(error);
     }
   };
-  
+
   public static AuthGuard = async (req: any, res: any, next: any) => {
     try {
       let token = req.headers.authorization;
@@ -79,7 +79,7 @@ export class AuthService{
           token,
           process.env.SECRET_KEY as string
         );
-        const user = await User.findOne({where:{id:decoded.id}});
+        const user = await User.findOne({ where: { id: decoded.id } });
         // if (user?.validatePassword(decoded.iat)) {
         //   throw new Error('User recently changed their password');
         // }
@@ -98,7 +98,7 @@ export class AuthService{
         .json({ message: error.message || "Unauthorized", status: 401 });
     }
   };
-  
+
   public static checkRole = (roles: string) => {
     return (req: any, res: Response, next: any) => {
       if (!roles.includes(req?.user?.role)) {
@@ -107,7 +107,7 @@ export class AuthService{
       next();
     };
   };
-  
+
   public static setUser = async (req: any, res: any, next: any) => {
     let token = req.headers.authorization;
     if (token && token.startsWith("Bearer")) {
@@ -120,5 +120,5 @@ export class AuthService{
     }
     next();
   };
-  
+
 }

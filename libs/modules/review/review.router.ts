@@ -1,5 +1,5 @@
+import { AuthService } from "@modules/auth/auth.service";
 import { Router } from "express";
-import { AuthService } from "modules/auth/auth.service";
 import { ReviewController } from "./review.controller";
 
 const ReviewRouter = Router({ mergeParams: true });

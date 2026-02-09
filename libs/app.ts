@@ -1,8 +1,8 @@
+import { handleErrorMiddleware } from "@middlewares/error.middleware";
+import Router from "@modules/routes";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
-import { handleErrorMiddleware } from "middlewares/error.middleware";
-import Router from "modules/routes";
 import path from "path";
 import DOT_ENV from "../config.env";
 import { connectionManager } from "./configs/db-connection.config";

@@ -1,10 +1,10 @@
+import { connectionManager } from "@configs/db-connection.config";
 import axios from "axios";
 import handler from "../../controllers/handler.factory";
-import { APIModifier } from "../../utils/api-features.util";
 import { Category } from "../../entities/category.entity";
 import { Product } from "../../entities/product.entity";
+import { APIModifier } from "../../utils/api-features.util";
 import { ProductFilterDto } from "./product.dto";
-import { connectionManager } from "configs/db-connection.config";
 
 export class ProductService {
   public static getDummyProducts = async () => {
@@ -102,16 +102,16 @@ export class ProductService {
     }
   };
 
-  public static async filterProducts (filterOptions: ProductFilterDto) {
+  public static async filterProducts(filterOptions: ProductFilterDto) {
     const productsRepo = connectionManager.getRepo(Product);
     const filteredProducts = productsRepo.createQueryBuilder("product").leftJoinAndSelect("product.category", "category");
-    if(filterOptions.category){
+    if (filterOptions.category) {
       filteredProducts.where({
         categoryId: filterOptions.category
       })
     }
 
-    if(filterOptions.brand){
+    if (filterOptions.brand) {
       filteredProducts.where({
         brand: filterOptions.brand,
       })

@@ -1,3 +1,4 @@
+import AppDataSource from "@configs/data-source";
 import { handleErrorMiddleware } from "@middlewares/error.middleware";
 import Router from "@modules/routes";
 import cors from "cors";
@@ -45,7 +46,7 @@ const port = DOT_ENV.PORT || 3000;
 //     `➡ Socket Listening at http://localhost:${process.env.SOCKET_PORT}/api`
 //   );
 // });
-app.listen(port, async () => {
+const server = app.listen(port, async () => {
   await connectionManager.fetchDbConnection();
   console.log(`➡ Listening at http://localhost:${port}/api`);
   // await cronService.productsCron();
@@ -75,3 +76,22 @@ Router.init(app);
 
 // Error Handling Middleware
 app.use(handleErrorMiddleware);
+
+const shutdown = async (signal: string) => {
+  console.log(`\nReceived ${signal}. Closing server gracefully...`);
+
+  server.close(async () => {
+    console.log('HTTP server closed');
+
+    try {
+      await AppDataSource.destroy();
+      console.log('DB connection closed');
+      process.exit(0);
+    } catch (err) {
+      console.error('Error during shutdown', err);
+      process.exit(1);
+    }
+  });
+};
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);

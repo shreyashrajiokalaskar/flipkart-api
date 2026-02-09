@@ -3,6 +3,7 @@ import { join } from "path";
 import { DataSource } from "typeorm";
 
 dotenv.config();
+
 const AppDataSource = new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST || 'localhost',
@@ -13,7 +14,7 @@ const AppDataSource = new DataSource({
   entities: [join(__dirname, '..', '**', '*.entity.{ts,js}')],
   migrations: [join(__dirname, '..', 'migrations', '*.{ts,js}')],
   synchronize: false,
-  logging: false,
+  logging: true
 });
 
 export default AppDataSource;

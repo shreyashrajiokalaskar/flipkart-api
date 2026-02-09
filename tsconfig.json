@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "CommonJS",
 
-    "outDir": "./build",
+    "outDir": "./dist",
     "baseUrl": ".",
 
     "strict": true,

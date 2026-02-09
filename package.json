@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon app.ts",
     "build": "tsc && tsc-alias",
-    "start:prod": "node build/libs/index.js",
+    "start:prod": "node dist/libs/index.js",
     "start:dev": "ts-node-dev -r tsconfig-paths/register ./libs/app.ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "typeorm:create": "cd ./libs/migrations && npm run typeorm -- migration:create ./libs/migrations/$npm_config_name",
